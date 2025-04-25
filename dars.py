@@ -48,14 +48,10 @@ LOADING = "⏳"
 HASHED_PASSWORD = hashlib.sha256("524932510194".encode()).hexdigest()
 
 # Function to check the password
-def check_password():
-    print("Access Granted!")
 
 # Main function
 if __name__ == "__main__":
-    check_password()
-
-
+    pass
 
 usernamefile = "email_usernames.txt"
 def generate_old_android_ua():
@@ -430,52 +426,29 @@ def create_fbunconfirmed(account_type, usern, gender):
     
 
 def NEMAIN():
-    """Handles new registration method."""
     print(LOGO)
-    try:
-        while True:
-            max_create = int(input(f"{YELLOW}{INFO}   HOW MANY ACCOUNTS? (1-5000, 0=exit): {RESET}"))
-            if max_create == 0:
-                print(f"{CYAN}{FAILURE}   Press PGUP then Enter...{RESET}")
-                break
-            elif 1 <= max_create <= 5000:
-                print(f"{YELLOW}{INFO}   1. Philippine Account {RESET}")
-                account_type = int(input(f"{INFO}   Select Option: {GREEN}{RESET}"))
-                if account_type not in [1, 2]:
-                    print(f"{CYAN}{FAILURE} Invalid option selected. Please choose 1 or 2.{RESET}")
-                    continue
-                gender = int(input(f"{YELLOW}{INFO}   Gender (1: Male, 2: Female): {RESET}"))
-                if gender not in [1, 2]:
-                    print(f"{CYAN}{FAILURE} Try again (1: Male, 2: Female){RESET}")
-                    continue
-                print(LOGO)
-                print(f"╔" + "═" * 56 + "╗")
-                print(f"║    TOTAL ACCOUNTS : {GREEN}{max_create}       {RESET}                          ║{RESET}")
-                print(f"║    PROCESSING... PLEASE WAIT                           ║{RESET}")
-                print(f"╚" + "═" * 56 + "╝")
-                oks = []
-                cps = []
-                for i in range(max_create):
-                    # Print the progress line
-                    sys.stdout.write(f'  \r\r\33[38;5;37m  [\x1b[38;5;46m{CYAN}Creating Please wait...\33[38;5;37m\33[38;5;37m]\033[1;97m-\33[38;5;37m[\033[1;97m{i+1}/{max_create}\33[38;5;37m]\033[1;97m-\33[38;5;37m[\x1b[38;5;46mOK\33[38;5;160m/\x1b[38;5;208mCP\33[38;5;37m]\033[1;97m-\33[38;5;37m[\x1b[38;5;46m{len(oks)}\33[38;5;160m/\x1b[38;5;208m{len(cps)}\33[38;5;37m]')
-                    sys.stdout.flush()
+    max_create = 1
+    account_type = 1  # 1 = Philippines
+    gender = 1  # 1 = Male, 2 = Female
+    # --------------------------------------
 
-                    
-                    usern = "ali"  # Replace with actual username logic
-                    result = create_fbunconfirmed(account_type, usern, gender)
+    print(LOGO)
+    oks = []
+    cps = []
 
-                    if result:
-                        oks.append(result)
-                    else:
-                        cps.append(result)
+    for i in range(max_create):
+        # Show progress
+        sys.stdout.write(f'  \r\r\33[38;5;37m  [\x1b[38;5;46m{CYAN}Creating Please wait...\33[38;5;37m\33[38;5;37m]\033[1;97m-\33[38;5;37m[\033[1;97m{i+1}/{max_create}\33[38;5;37m]\033[1;97m-\33[38;5;37m[\x1b[38;5;46mOK\33[38;5;160m/\x1b[38;5;208mCP\33[38;5;37m]\033[1;97m-\33[38;5;37m[\x1b[38;5;46m{len(oks)}\33[38;5;160m/\x1b[38;5;208m{len(cps)}\33[38;5;37m]')
+        sys.stdout.flush()
+        usern = "auto_user"  # Can be customized if needed
+        result = create_fbunconfirmed(account_type, usern, gender)
 
-                print(f"{BLUE}{INFO}   Batch creation completed{RESET}")
-            else:
-                print(f"{CYAN}{FAILURE} Invalid input (1-500 only){RESET}")
-    except ValueError:
-        print(f"{RED}{FAILURE} Please enter a valid number{RESET}")
-    except KeyboardInterrupt:
-        print(f"{RED}{FAILURE} \n[!] Interrupted by user{RESET}")
+        if result:
+            oks.append(result)
+        else:
+            cps.append(result)
+
+    print(f"{BLUE}{INFO}   Batch creation completed{RESET}")
 
 # Run the main function
 if __name__ == "__main__":
