@@ -238,32 +238,29 @@ def check_otp_kuku(email, cok, max_attempts=10, delay=3):
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
             time.sleep(15)
 
-    
+
     return None
 
-def get_names(account_type, gender):
-    """Returns a tuple of (first name, last name) based on account type and gender."""
-    if account_type == 1:  #  Philippines 
-        male_first_names = ["Arvin", "Kemp", "Viray", "Alfie", "Kenneth", "Dylan", "Finn", "Sunday", "Aidric", "Lucas",
-                            "Kyle", "Vin", "Bryan", "Gavin", "Zion", "Lucas", "Bueno", "Kyle", "Bryan", "Nathaniel"]
-        female_first_names = ["Eloise", "Fyra", "Jovie", "Fatima", "Zainab", "Cassiet", "Jeneth", "Cynthia" "Angela", "Alina",
-                              "Arianne", "Joy", "Christine", "Jean", "Aisha", "Jelly Anne", "Diane", "Michelle", "Maxene", "Carolina",
-							  "Shanelle", "Cassey", "Carolina", "Mariel", "Carolina", "Cindy", "Maica", "Dixie", "Jaica",
-							  "Mitch", "Jessa Ma", "Lovely", "Maejoy", "Marjorie", "Cathy", "Niambe", "Giselle", "Katryn",
-							  "Alexa", "Hazel", "Cherose", "Nerissa", "Erica", "Carmela", "Jeanen", "Erich", "Rose Anne"]
-        last_names = ["Pelayo", "Castro", "Añonuevo", "Viray", "Quijano", "Salazar", "Ortega", "Vergara", "Franco", "Canoy",
-                      "Pascual", "Avila", "Zamora", "Cruz", "Delfin", "Moreno", "Romano", "Hipolito", "Alejo", "Espinosa",
-					   "Fuentes", "Gutierrez", "Morales", "Bautista", "Torres", "Pangilinan", "Quinto", "Aguilar",
-					   "Dizon", "Fernandez", "Gamboa", "Valenzuela", "Lopez", "Sanchez", "Constantino", "Villareal",
-					   "Diaz", "Sevilla", "Ferrer", "Arellano", "Castillo", "Tamayo", "dela Rosa", "Mercado",
-					   "Espiritu", "Domingo", "Natividad", "Gonzaga", "Velasquez", "Briones", "Morales", "Pepito"]
-    else:  # Philippines 
-        male_first_names = []
-        female_first_names = []
-        last_names = []
+def load_names_from_file(file_path):
+    with open(file_path, 'r') as file:
+        return [line.strip() for line in file.readlines()]
 
+
+def get_names(account_type, gender):
+    if account_type == 1:  # Philippines
+        # Load male and last names from file (ensure correct file paths)
+        male_first_names = load_names_from_file("/storage/emulated/0/Download/first_name.txt")
+        last_names = load_names_from_file("/storage/emulated/0/Download/last_name.txt")
+        female_first_names = []  # Female names not used for this account type
+    else:  # Other account type
+        male_first_names = []  # Not used
+        female_first_names = load_names_from_file('path_to_female_first_names.txt')
+        last_names = load_names_from_file('path_to_last_names.txt')
+
+    # Select first name based on gender
     firstname = random.choice(male_first_names if gender == 1 else female_first_names)
     lastname = random.choice(last_names)
+
     return firstname, lastname
 
 def generate_random_phone_number():
@@ -426,13 +423,12 @@ def create_fbunconfirmed(account_type, usern, gender):
     
 
 def NEMAIN():
-    print(LOGO)
-    max_create = 1
+    """Handles new registration method automatically."""
+
+    max_create = 1  # Set how many accounts to generate
     account_type = 1  # 1 = Philippines
     gender = 1  # 1 = Male, 2 = Female
     # --------------------------------------
-
-    print(LOGO)
     oks = []
     cps = []
 
