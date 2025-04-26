@@ -275,18 +275,16 @@ def generate_random_password():
     """Generate a random password with at least one letter, digit, and symbol."""
     letters = string.ascii_letters
     digits = string.digits
-    symbols = "@#$&_!"
 
     # Ensure at least one character from each group
     password = [
         random.choice(string.ascii_lowercase),
         random.choice(string.ascii_uppercase),
         random.choice(digits),
-        random.choice(symbols)
     ]
 
     # Fill the remaining characters randomly from all groups
-    all_chars = letters + digits + symbols
+    all_chars = letters + digits
     password += random.choices(all_chars, k=8)
 
     # Shuffle the result to avoid predictable positions
