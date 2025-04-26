@@ -31,7 +31,20 @@ RESET = "\033[0m"
 BASE_URL_KUKU = "https://m.kuku.lu"
 LOGO = fr"""
 {CYAN}
+╔══════════════════════════════════════════════╗
+║                                              ║
+║     ██████╗  █████╗ ██████╗ ███████╗         ║
+║    ██╔════╝ ██╔══██╗██╔══██╗██╔════╝         ║
+║    ██║  ███╗███████║██████╔╝█████╗           ║
+║    ██║   ██║██╔══██║██╔═══╝ ██╔══╝           ║
+║    ╚██████╔╝██║  ██║██║     ███████╗         ║
+║     ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚══════╝         ║
+║                                              ║
+║       ⸻  Auto FB Creator by Darwin  ⸻        ║
+╚══════════════════════════════════════════════╝
+{RESET}
 """
+
 MAX_RETRIES = 3
 RETRY_DELAY = 2
 # ANSI color codes
@@ -259,11 +272,26 @@ def generate_random_phone_number():
     return number
 
 def generate_random_password():
-    """Generate a random password."""
-    length = random.randint(10, 16)
-    all_characters = string.ascii_letters + string.digits
-    password = ''.join(random.choices(string.ascii_letters + string.digits + "@#$&_!", k=8))
-    return password
+    """Generate a random password with at least one letter, digit, and symbol."""
+    letters = string.ascii_letters
+    digits = string.digits
+    symbols = "@#$&_!"
+
+    # Ensure at least one character from each group
+    password = [
+        random.choice(string.ascii_lowercase),
+        random.choice(string.ascii_uppercase),
+        random.choice(digits),
+        random.choice(symbols)
+    ]
+
+    # Fill the remaining characters randomly from all groups
+    all_chars = letters + digits + symbols
+    password += random.choices(all_chars, k=8)
+
+    # Shuffle the result to avoid predictable positions
+    random.shuffle(password)
+    return ''.join(password)
 
 def generate_user_details(account_type, gender):
     """Generate random user details."""
@@ -409,7 +437,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 def NEMAIN():
     """Handles new registration method automatically."""
 
-    max_create = 2  # Set how many accounts to generate
+    max_create = 5  # Set how many accounts to generate
     account_type = 1  # 1 = Philippines
     gender = 1  # 1 = Male, 2 = Female
     # --------------------------------------
@@ -418,7 +446,8 @@ def NEMAIN():
 
     for i in range(max_create):
         # Show progress
-        sys.stdout.write(f'  \r\r\33[38;5;37m  [\x1b[38;5;46m{CYAN}Creating Please wait...\33[38;5;37m\33[38;5;37m]\033[1;97m-\33[38;5;37m[\033[1;97m{i+1}/{max_create}\33[38;5;37m]\033[1;97m-\33[38;5;37m[\x1b[38;5;46mOK\33[38;5;160m/\x1b[38;5;208mCP\33[38;5;37m]\033[1;97m-\33[38;5;37m[\x1b[38;5;46m{len(oks)}\33[38;5;160m/\x1b[38;5;208m{len(cps)}\33[38;5;37m]')
+        sys.stdout.write(
+            f'\r\33[38;5;82m  [\x1b[38;5;82m{CYAN}Creating Acc Please Wait.\33[38;5;82m]\033[1;97m - \33[38;5;82m[\033[1;97m{i + 1}/{max_create}\33[38;5;82m]')
         sys.stdout.flush()
         usern = "auto_user"  # Can be customized if needed
         result = create_fbunconfirmed(account_type, usern, gender)
@@ -432,4 +461,5 @@ def NEMAIN():
 
 # Run the main function
 if __name__ == "__main__":
+    print(LOGO)
     NEMAIN()
