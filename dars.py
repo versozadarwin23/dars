@@ -326,7 +326,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         "sec-fetch-site": "same-origin",
         "sec-fetch-user": "?1",
         "upgrade-insecure-requests": "1",
-        "viewport-width": "720"
+        "viewport-width": "720",
         "user-agent": "Mozilla/5.0 (Linux; Android 11; vivo 1906 Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/131.0.6778.135 Mobile Safari/537.36 [FB_IAB/Orca-Android;FBAV/338.1.0.11.117;]"
     }
     while True:
