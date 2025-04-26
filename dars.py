@@ -142,13 +142,15 @@ def generate_email_kuku(cok):
     """Generate a random email using kuku.lu."""
     url = f"{BASE_URL_KUKU}/index.php"
     em = ''.join(random.choices(string.ascii_lowercase, k=18))
+    sagmaw = 'boxfi.uk', 'haren.uk'
+    wagas = random.choices(sagmaw)
     params = {
-        "action": "addMailAddrByAuto",
+        "action": "addMailAddrByManual",
         "nopost": "1",
         "by_system": "1",
         "t": str(int(time.time())),
         "csrf_token_check": cok.get("cookie_csrf_token", ""),
-        "newdomain": "boxfi.uk",
+        "newdomain": wagas,
         "newuser": em,
         "recaptcha_token": "",
         "_": str(int(time.time() * 1000))
