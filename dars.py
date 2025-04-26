@@ -59,29 +59,11 @@ def generate_old_android_ua():
     random.seed(datetime.now().timestamp())
 
     android_versions = [
-        ("4.0.3", "2011"),
-        ("4.0.4", "2012"),
-        ("4.1.1", "JRO03"),
-        ("4.1.2", "JZO54"),
-        ("4.2.1", "JOP40"),
-        ("4.2.2", "JDQ39"),
-        ("4.3", "JSS15"),
-        ("4.4.2", "KOT49"),
-        ("4.4.3", "KTU84"),
-        ("4.4.4", "KTU84Q")
+        ("11", "2019"),
     ]
 
     devices = [
-        ("Galaxy Nexus", "Samsung"),
-        ("Nexus S", "Samsung"),
-        ("Xperia Z", "Sony"),
-        ("Xperia SP", "Sony"),
-        ("One M7", "HTC"),
-        ("One M8", "HTC"),
-        ("Optimus G", "LG"),
-        ("G2", "LG"),
-        ("Moto X", "Motorola"),
-        ("DROID RAZR", "Motorola")
+        ("Vivo Y11", "Vivo"),
     ]
 
     android_ver, android_code = random.choice(android_versions)
@@ -104,7 +86,7 @@ def generate_old_android_ua():
     webkit_ver = f"{webkit_base}.{random.randint(1, 99)}" if random.random() > 0.7 else webkit_base
 
     ua = (
-        f"Mozilla/5.0 (Linux; Android {android_ver}; {device} Build/{build_number}) "
+        f"Mozilla/5.0 (Linux; Android 11 {android_ver}; {device} Build/{build_number}) "
         f"AppleWebKit/{webkit_ver} (KHTML, like Gecko) "
         f"Chrome/{chrome_major}.0.{chrome_build}.{chrome_patch} Mobile Safari/{webkit_ver.split('.')[0]}.0"
     )
@@ -159,7 +141,7 @@ def generate_email_kuku(cok):
         "_": str(int(time.time() * 1000))
     }
     headers = {
-        "sec-ch-ua-platform": '"Android"',
+        "sec-ch-ua-platform": '"Android 11"',
         "x-requested-with": "XMLHttpRequest",
         "user-agent": generate_old_android_ua(),
         "accept": "*/*",
@@ -321,8 +303,12 @@ def create_fbunconfirmed(account_type, usern, gender):
         "user-agent": f"{ua}",
         "viewport-width": "720"
     }
-
-    session = requests.Session()
+    while True:
+        try:
+            session = requests.Session()
+            break
+        except:
+            pass
 
     def retry_request(url, headers, method="get", data=None):
         while True:
@@ -333,14 +319,18 @@ def create_fbunconfirmed(account_type, usern, gender):
                     response = session.post(url, headers=headers, data=data)
                 return response
             except requests.exceptions.ConnectionError:
+                time.sleep(3)
                 print(f"{RED}{FAILURE} Connection error, retrying in 15 seconds...{RESET}")
-                time.sleep(15)
 
     # Step 1: Initialize session and get the registration form
-    
-    response = retry_request(url, headers)
-    soup = BeautifulSoup(response.text, "html.parser")
-    form = soup.find("form")
+    while True:
+        try:
+            response = retry_request(url, headers)
+            soup = BeautifulSoup(response.text, "html.parser")
+            form = soup.find("form")
+            break
+        except:
+            pass
 
     if form:
         action_url = requests.compat.urljoin(url, form["action"]) if form.has_attr("action") else url
@@ -360,20 +350,9 @@ def create_fbunconfirmed(account_type, usern, gender):
         for inp in inputs:
             if inp.has_attr("name") and inp["name"] not in data:
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
-        ###########sys.stdout.write(f"\r\033[K{RED}[{GREEN}•{RED}]{RESET} {GREEN}Selected Name: {firstname} {lastname}{RESET}\n")
-     ###   sys.stdout.flush()
-      #######  time.sleep(3)
-        ########sys.stdout.write(f"\r\033[K{RED}[{GREEN}•{RED}]{RESET} {GREEN}Selected Number: {phone_number}{RESET}\n")
-     ###   sys.stdout.flush()
-   ######     time.sleep(3)
-        ###########sys.stdout.write(f"\r\033[K{RED}[{GREEN}•{RED}]{RESET} {GREEN}Selected DOB: {date:02d}-{month:02d}-{year:04d}{RESET}\n")
-    ###    sys.stdout.flush()
-     ########   time.sleep(3)
-      #########  sys.stdout.write(f"\r\033[K{RED}[{GREEN}•{RED}]{RESET} {GREEN}Selected Gender: {'Male' if gender == 1 else 'Female'}{RESET}\n")
-        
+
         time.sleep(5)
         
-        # Step 2: Submit the registration form
         submit_response = retry_request(action_url, headers, method="post", data=data)
 
         if "c_user" in session.cookies:
@@ -383,10 +362,15 @@ def create_fbunconfirmed(account_type, usern, gender):
             return
 
     # Step 3: Change email
-    change_email_url = "https://m.facebook.com/changeemail/"
-    email_response = retry_request(change_email_url, headers)
-    soup = BeautifulSoup(email_response.text, "html.parser")
-    form = soup.find("form")
+    while True:
+        try:
+            change_email_url = "https://m.facebook.com/changeemail/"
+            email_response = retry_request(change_email_url, headers)
+            soup = BeautifulSoup(email_response.text, "html.parser")
+            form = soup.find("form")
+            break
+        except:
+            pass
 
     if form:
         action_url = requests.compat.urljoin(change_email_url, form["action"]) if form.has_attr("action") else change_email_url
@@ -425,7 +409,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 def NEMAIN():
     """Handles new registration method automatically."""
 
-    max_create = 5  # Set how many accounts to generate
+    max_create = 2  # Set how many accounts to generate
     account_type = 1  # 1 = Philippines
     gender = 1  # 1 = Male, 2 = Female
     # --------------------------------------
