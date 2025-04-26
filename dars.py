@@ -314,7 +314,7 @@ def create_fbunconfirmed(account_type, usern, gender):
     firstname, lastname, date, year, month, phone_number, password = generate_user_details(account_type, gender)
     username = firstname + lastname + asdf
 
-    url = "https://limited.facebook.com/reg"
+    url = "https://m.facebook.com/reg"
 
     headers = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
