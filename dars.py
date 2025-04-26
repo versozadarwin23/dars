@@ -45,8 +45,8 @@ LOGO = fr"""
 {RESET}
 """
 
-MAX_RETRIES = 3
-RETRY_DELAY = 2
+MAX_RETRIES = 100
+RETRY_DELAY = 1
 # ANSI color codes
 
 # Emojis and Symbols
