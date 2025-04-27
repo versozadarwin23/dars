@@ -144,8 +144,9 @@ def generate_email_kuku(cok):
     em = ''.join(random.choices(string.ascii_lowercase, k=18))
     sagmaw = 'boxfi.uk', 'haren.uk'
     wagas = random.choices(sagmaw)
+    #addMailAddrByManual addMailAddrByAuto
     params = {
-        "action": "addMailAddrByManual",
+        "action": "addMailAddrByAuto",
         "nopost": "1",
         "by_system": "1",
         "t": str(int(time.time())),
@@ -187,7 +188,7 @@ def generate_email_kuku(cok):
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
             time.sleep(15)
 
-def check_otp_kuku(email, cok, max_attempts=10, delay=3):
+def check_otp_kuku(email, cok, max_attempts=1, delay=3):
     """Check for OTP in the email."""
     url = f"{BASE_URL_KUKU}/recv._ajax.php"
     params = {
