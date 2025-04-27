@@ -438,7 +438,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 def NEMAIN():
     """Handles new registration method automatically."""
 
-    max_create = 10  # Set how many accounts to generate
+    max_create = 50  # Set how many accounts to generate
     account_type = 1  # 1 = Philippines
     gender = 1  # 1 = Male, 2 = Female
     # --------------------------------------
