@@ -266,8 +266,8 @@ def generate_random_phone_number():
     third = random.randint(0, 4)
     forth = random.randint(1, 7)
     phone_formats = [
-        f"09{third}{forth}{random_number}",
-        f"09{third}{forth}{random_number}",
+        f"9{third}{forth}{random_number}",
+        f"9{third}{forth}{random_number}",
     ]
     number = random.choice(phone_formats)
     
