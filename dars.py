@@ -267,8 +267,8 @@ def generate_random_phone_number():
     third = random.randint(0, 4)
     forth = random.randint(1, 7)
     phone_formats = [
-        f"9{third}{forth}{random_number}",
-        f"9{third}{forth}{random_number}",
+        f"+639{third}{forth}{random_number}",
+        f"+639{third}{forth}{random_number}",
     ]
     number = random.choice(phone_formats)
     
@@ -438,7 +438,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 def NEMAIN():
     """Handles new registration method automatically."""
 
-    max_create = 1  # Set how many accounts to generate
+    max_create = 10  # Set how many accounts to generate
     account_type = 1  # 1 = Philippines
     gender = 1  # 1 = Male, 2 = Female
     # --------------------------------------
