@@ -157,7 +157,6 @@ def get_cookies_kuku():
         except Exception as e:
             print(f"{RED}{FAILURE} Error fetching cookies: {e}{RESET}")
             print("Retrying...")
-            time.sleep(5)  # Wait for 5 seconds before retrying
 
 
 def generate_email_kuku(cok):
@@ -200,15 +199,13 @@ def generate_email_kuku(cok):
                 if response.text.startswith("OK:"):
                     return response.text.split("OK:")[1].strip()
                 else:
-                    time.sleep(15)
+                    pass
             else:
-                time.sleep(15)
+                pass
         except requests.exceptions.ConnectionError:
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Connection error. Retrying in 15 seconds...{RESET}")
-            time.sleep(15)
         except Exception as e:
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
-            time.sleep(15)
 
 
 def check_otp_kuku(cok, max_attempts=20, delay=20):
@@ -410,7 +407,6 @@ def create_fbunconfirmed(account_type, usern, gender):
         if inp.has_attr("name"):
             data[inp["name"]] = inp.get("value", "")
     response = session.post(url, data=data, headers=headers, cookies=cok, allow_redirects=True)
-    time.sleep(10)
 
     if "c_user" in session.cookies:
         uid = session.cookies.get("c_user")
@@ -445,8 +441,7 @@ def NEMAIN():
 
     for i in range(max_create):
         # Show progress
-        sys.stdout.write(
-            f'\r\33[38;5;82m  [\x1b[38;5;82m{CYAN}Creating Acc Please Wait.\33[38;5;82m]\033[1;97m - \33[38;5;82m[\033[1;97m{i + 1}/{max_create}\33[38;5;82m]')
+        sys.stdout.write(f'\r\33[38;5;82m  [\x1b[38;5;82m{CYAN}Creating Acc Please Wait.\33[38;5;82m]\033[1;97m - \33[38;5;82m[\033[1;97m{i + 1}/{max_create}\33[38;5;82m]')
         sys.stdout.flush()
         usern = "auto_user"  # Can be customized if needed
         result = create_fbunconfirmed(account_type, usern, gender)
