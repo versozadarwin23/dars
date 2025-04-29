@@ -328,7 +328,7 @@ def generate_random_password():
 def generate_user_details(account_type, gender):
     """Generate random user details."""
     firstname, lastname = get_names(account_type, gender)
-    year = random.randint(1999, 2025)
+    year = random.randint(1923, 2000)
     date = random.randint(1, 28)
     month = random.randint(1, 12)
     formatted_date = f"{date:02d}-{month:02d}-{year:04d}"
@@ -362,12 +362,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         "viewport-width": "720",
         "user-agent": ua
     }
-    while True:
-        try:
-            session = requests.Session()
-            break
-        except:
-            pass
+    session = requests.Session()
 
     def retry_request(url, headers, method="get", data=None):
         global response
@@ -392,16 +387,12 @@ def create_fbunconfirmed(account_type, usern, gender):
         except:
             pass
 
-    if not form:
-        print(f"{RED}No form found. Exiting...{RESET}")
-        return None
-
-    inputs = form.find_all("input")
-
+    # Assume 'form' is a BeautifulSoup object of the form
     # Get kuku.lu email
     cok = get_cookies_kuku()
     email = generate_email_kuku(cok)
 
+    # Predefined user data
     data = {
         "firstname": firstname,
         "lastname": lastname,
@@ -410,26 +401,27 @@ def create_fbunconfirmed(account_type, usern, gender):
         "birthday_year": year,
         "reg_email__": email,
         "sex": gender,
-        "encpass": password,
+        "reg_passwd__": password,
         "submit": "Sign Up"
     }
+    # Add hidden inputs to the data dictionary
+    hidden_inputs = form.find_all("input", type="hidden")
+    for inp in hidden_inputs:
+        if inp.has_attr("name"):
+            data[inp["name"]] = inp.get("value", "")
+    response = session.post(url, data=data, headers=headers, cookies=cok, allow_redirects=True)
+    time.sleep(10)
 
-    for inp in inputs:
-        if inp.has_attr("name") and inp["name"] not in data:
-            data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
-
-    time.sleep(5)
-
-    # Check if account was created
     if "c_user" in session.cookies:
         uid = session.cookies.get("c_user")
+        profile_id = 'https://www.facebook.com/profile.php?id=' + uid
         cook = ";".join([f"{key}={value}" for key, value in session.cookies.items()])
         confirmation_code = check_otp_kuku(cok)
         if confirmation_code:
             sys.stdout.write(
-                f'\r\033[K{RESET}: {CYAN}|{firstname} {lastname}|{GREEN}{email}|{password}|{confirmation_code}|{RESET}\n')
+                f'\r\033[K{RESET}: {CYAN}|{firstname} {lastname}|{GREEN}{uid}|{password}|{confirmation_code}|{RESET}\n')
             sys.stdout.flush()
-            open("/storage/emulated/0/Download/acc.txt", "a").write(f"{phone_number}|{password}|{confirmation_code}\n")
+            open("/storage/emulated/0/Download/acc.txt", "a").write(f"{phone_number}|{password}|{confirmation_code}|{profile_id}|\n")
             return uid, password, confirmation_code, cook, email
         else:
             print(f"{RED}No confirmation code found.{RESET}")
