@@ -456,4 +456,5 @@ def NEMAIN():
 
 # Run the main function
 if __name__ == "__main__":
+    print(LOGO)
     NEMAIN()
