@@ -44,8 +44,8 @@ LOGO = fr"""
 {RESET}
 """
 
-MAX_RETRIES = 20
-RETRY_DELAY = 20
+MAX_RETRIES = 3
+RETRY_DELAY = 2
 # ANSI color codes
 
 # Emojis and Symbols
@@ -111,12 +111,7 @@ def generate_mobile_user_agent():
         f"Chrome/{chrome_major}.0.{chrome_build}.{chrome_patch} Mobile Safari/{webkit_ver.split('.')[0]}.0"
     )
 
-    return ua
-
-
-import time
-import requests
-
+    return ua
 
 def get_cookies_kuku():
     """Fetch initial cookies from the email service."""
@@ -208,7 +203,7 @@ def generate_email_kuku(cok):
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
 
 
-def check_otp_kuku(cok, max_attempts=20, delay=20):
+def check_otp_kuku(cok, max_attempts=3, delay=3):
     """Check for OTP in the email."""
     url = f"{BASE_URL_KUKU}/recv._ajax.php"
     params = {
