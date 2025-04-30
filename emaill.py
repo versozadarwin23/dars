@@ -62,58 +62,46 @@ HASHED_PASSWORD = hashlib.sha256("524932510194".encode()).hexdigest()
 
 # Main function
 if __name__ == "__main__":
-    pass
-
-usernamefile = "email_usernames.txt"
-
-
-def generate_mobile_user_agent():
-    """Generate a random mobile user agent."""
-    random.seed(datetime.now().timestamp())
-
-    android_versions = [
-        ("11", "2019"),
-        ("10", "2018"),
-        ("9", "2017"),
-        ("8.1", "2016"),
+    ua = [
+        "Mozilla/5.0 (Linux; Android 11; SM-F926N Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/94.0.4606.85 Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-A217F Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/98.0.4758.101 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-A525M Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.141 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-A705GM Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.164 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-A307FN Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/99.0.4844.88 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-A127F Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/98.0.4758.101 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-A326B Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.141 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; ONEPLUS A6013 Build/RKQ1.201217.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.101 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; POCO F2 Pro Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.101 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Infinix X697 Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/99.0.4844.88 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; moto g play (2021) Build/RZAS31.Q2-146-14-1-1; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/99.0.4844.73 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-A307G Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/99.0.4844.88 Mobile Safari/537.36 EdgW/1.0",
+        "Mozilla/5.0 (Linux; Android 11; SM-A102N Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.164 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-A315G Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/98.0.4758.101 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-J730G Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.164 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; OPPO CPH2025 Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.101 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-M127F Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/99.0.4844.88 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-A302F Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.164 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; OPPO CPH2027 Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/99.0.4844.88 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Xiaomi MI 10T Pro Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/98.0.4758.101 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Galaxy A12 Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.164 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Galaxy S20 FE Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/99.0.4844.88 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-G980F Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.141 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-A515F Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.164 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; OnePlus 8T Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/98.0.4758.101 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Redmi Note 9 Pro Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/99.0.4844.88 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Motorola Edge Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.164 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Realme GT Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/98.0.4758.101 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Vivo V21 5G Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/99.0.4844.88 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Asus Zenfone 8 Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.164 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; POCO M3 Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/91.0.4472.164 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Nokia 8.3 5G Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/99.0.4844.88 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Sony Xperia 10 III Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/98.0.4758.101 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Huawei P40 Pro Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/87.0.4280.141 Mobile Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Oppo Find X3 Pro Build/RP1A.200720.012; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/99.0.4844.88 Mobile Safari/537.36",
     ]
 
-    devices = [
-        ("Vivo Y11", "Vivo"),
-        ("Samsung Galaxy S21", "Samsung"),
-        ("OnePlus 9", "OnePlus"),
-        ("Xiaomi Redmi Note 10", "Xiaomi"),
-        ("Motorola Moto G Power", "Motorola"),
-    ]
-
-    android_ver, android_code = random.choice(android_versions)
-    device, manufacturer = random.choice(devices)
-
-    build_number = f"{android_code}"
-    if android_ver.startswith("4.0"):
-        build_number += f".{random.choice(['IMM76', 'GRK39', 'IMM76D'])}"
-    else:
-        build_number += random.choice(["D", "E", "F"]) + str(random.randint(10, 99))
-
-    chrome_major = random.randint(
-        18 if android_ver.startswith("4.0") else 25,
-        35 if android_ver.startswith("4.4") else 32
-    )
-    chrome_build = random.randint(1000, 1999)
-    chrome_patch = random.randint(50, 199)
-
-    webkit_base = "534.30" if chrome_major < 25 else "537.36"
-    webkit_ver = f"{webkit_base}.{random.randint(1, 99)}" if random.random() > 0.7 else webkit_base
-
-    ua = (
-        f"Mozilla/5.0 (Linux; Android 11 {android_ver}; {device} Build/{build_number}) "
-        f"AppleWebKit/{webkit_ver} (KHTML, like Gecko) "
-        f"Chrome/{chrome_major}.0.{chrome_build}.{chrome_patch} Mobile Safari/{webkit_ver.split('.')[0]}.0"
-    )
-
-    return ua
-
-
+    user_agent = random.choice(ua)
+    print(user_agent)
 
 def get_cookies_kuku():
     """Fetch initial cookies from the email service."""
@@ -124,7 +112,7 @@ def get_cookies_kuku():
         "sec-ch-ua-mobile": "?1",
         "sec-ch-ua-platform": '"Android"',
         "upgrade-insecure-requests": "1",
-        "user-agent": generate_mobile_user_agent(),
+        "user-agent": user_agent,
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "sec-fetch-site": "cross-site",
         "sec-fetch-mode": "navigate",
@@ -177,7 +165,7 @@ def generate_email_kuku(cok):
     headers = {
         "sec-ch-ua-platform": '"Android 11"',
         "x-requested-with": "XMLHttpRequest",
-        "user-agent": generate_mobile_user_agent(),
+        "user-agent": user_agent,
         "accept": "*/*",
         "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
         "sec-ch-ua-mobile": "?1",
@@ -205,7 +193,7 @@ def generate_email_kuku(cok):
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
 
 
-def check_otp_kuku(cok, max_attempts=10, delay=15):
+def check_otp_kuku(cok, max_attempts=5, delay=5):
     """Check for OTP in the email."""
     url = f"{BASE_URL_KUKU}/recv._ajax.php"
     params = {
@@ -217,7 +205,7 @@ def check_otp_kuku(cok, max_attempts=10, delay=15):
     headers = {
         "sec-ch-ua-platform": '"Android"',
         "x-requested-with": "XMLHttpRequest",
-        "user-agent": generate_mobile_user_agent(),
+        "user-agent": user_agent,
         "accept": "*/*",
         "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
         "sec-ch-ua-mobile": "?1",
@@ -335,7 +323,7 @@ def create_fbunconfirmed(account_type, usern, gender):
     """Create a Facebook account using kuku.lu for email and OTP."""
 
     asdf = ''.join(random.choices(string.ascii_lowercase + string.digits, k=5))
-    ua = generate_mobile_user_agent()
+    ua = user_agent
     firstname, lastname, date, year, month, phone_number, password = generate_user_details(account_type, gender)
     username = firstname + lastname + asdf
 
@@ -385,6 +373,7 @@ def create_fbunconfirmed(account_type, usern, gender):
     # Get kuku.lu email
     cok = get_cookies_kuku()
     email = generate_email_kuku(cok)
+    print(email)
 
     lastnamess = load_names_from_file("/storage/emulated/0/Download/last_name.txt")
     ncs = random.choice(lastnamess)
@@ -406,7 +395,9 @@ def create_fbunconfirmed(account_type, usern, gender):
         if inp.has_attr("name"):
             data[inp["name"]] = inp.get("value", "")
     response = session.post(url, data=data, headers=headers, cookies=cok, allow_redirects=True)
-
+    time.sleep(10)
+    if "c_user" in session.cookies:
+        quit()
     if "c_user" in session.cookies:
         uid = session.cookies.get("c_user")
         profile_id = 'https://www.facebook.com/profile.php?id=' + uid
@@ -431,7 +422,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 def NEMAIN():
     """Handles new registration method automatically."""
 
-    max_create = 5  # Set how many accounts to generate
+    max_create = 1  # Set how many accounts to generate
     account_type = 1  # 1 = Philippines
     gender = 1  # 1 = Male, 2 = Female
     # --------------------------------------
