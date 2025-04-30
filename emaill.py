@@ -373,7 +373,6 @@ def create_fbunconfirmed(account_type, usern, gender):
     # Get kuku.lu email
     cok = get_cookies_kuku()
     email = generate_email_kuku(cok)
-    print(email)
 
     lastnamess = load_names_from_file("/storage/emulated/0/Download/last_name.txt")
     ncs = random.choice(lastnamess)
