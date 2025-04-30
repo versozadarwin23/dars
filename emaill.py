@@ -386,7 +386,7 @@ def create_fbunconfirmed(account_type, usern, gender):
     cok = get_cookies_kuku()
     email = generate_email_kuku(cok)
 
-    lastnamess = load_names_from_file("C:/Users/user/Desktop/dars/last_name.txt")
+    lastnamess = load_names_from_file("/storage/emulated/0/Download/last_name.txt")
     ncs = random.choice(lastnamess)
     dawdaw = ncs + password
     data = {
