@@ -396,8 +396,6 @@ def create_fbunconfirmed(account_type, usern, gender):
     response = session.post(url, data=data, headers=headers, cookies=cok, allow_redirects=True)
     time.sleep(10)
     if "c_user" in session.cookies:
-        quit()
-    if "c_user" in session.cookies:
         uid = session.cookies.get("c_user")
         profile_id = 'https://www.facebook.com/profile.php?id=' + uid
         cook = ";".join([f"{key}={value}" for key, value in session.cookies.items()])
