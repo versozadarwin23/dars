@@ -388,7 +388,8 @@ def create_fbunconfirmed(account_type, usern, gender):
 
     lastnamess = load_names_from_file("C:/Users/user/Desktop/dars/last_name.txt")
     ncs = random.choice(lastnamess)
-    dawdaw = ncs + password    data = {
+    dawdaw = ncs + password
+    data = {
         "firstname": firstname,
         "lastname": lastname,
         "birthday_day": date,
