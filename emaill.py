@@ -111,7 +111,9 @@ def generate_mobile_user_agent():
         f"Chrome/{chrome_major}.0.{chrome_build}.{chrome_patch} Mobile Safari/{webkit_ver.split('.')[0]}.0"
     )
 
-    return ua
+    return ua
+
+
 
 def get_cookies_kuku():
     """Fetch initial cookies from the email service."""
@@ -384,8 +386,9 @@ def create_fbunconfirmed(account_type, usern, gender):
     cok = get_cookies_kuku()
     email = generate_email_kuku(cok)
 
-    # Predefined user data
-    data = {
+    lastnamess = load_names_from_file("C:/Users/user/Desktop/dars/last_name.txt")
+    ncs = random.choice(lastnamess)
+    dawdaw = ncs + password    data = {
         "firstname": firstname,
         "lastname": lastname,
         "birthday_day": date,
@@ -393,7 +396,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         "birthday_year": year,
         "reg_email__": email,
         "sex": gender,
-        "reg_passwd__": password,
+        "reg_passwd__": dawdaw,
         "submit": "Sign Up"
     }
     # Add hidden inputs to the data dictionary
@@ -410,9 +413,9 @@ def create_fbunconfirmed(account_type, usern, gender):
         confirmation_code = check_otp_kuku(cok)
         if confirmation_code:
             sys.stdout.write(
-                f'\r\033[K{RESET}: {CYAN}|{firstname} {lastname}|{GREEN}{uid}|{password}|{confirmation_code}|{RESET}\n')
+                f'\r\033[K{RESET}: {CYAN}|{firstname} {lastname}|{GREEN}{uid}|{dawdaw}|{confirmation_code}|{RESET}\n')
             sys.stdout.flush()
-            open("/storage/emulated/0/Download/acc.txt", "a").write(f"{phone_number}|{password}|{confirmation_code}|{profile_id}|\n")
+            open("/storage/emulated/0/Download/acc.txt", "a").write(f"{phone_number}|{dawdaw}|{confirmation_code}|{profile_id}|\n")
             return uid, password, confirmation_code, cook, email
         else:
             print(f"{RED}No confirmation code found.{RESET}")
