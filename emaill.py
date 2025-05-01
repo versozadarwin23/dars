@@ -346,8 +346,7 @@ def create_fbunconfirmed(account_type, usern, gender):
     }
     session = requests.Session()
 
-    def retry_request(url, headers, method="get", data=None):
-        global response
+        def retry_request(url, headers, method="get", data=None):
         while True:
             try:
                 if method == "get":
@@ -356,46 +355,78 @@ def create_fbunconfirmed(account_type, usern, gender):
                     response = session.post(url, headers=headers, data=data)
                 return response
             except requests.exceptions.ConnectionError:
-                time.sleep(3)
                 print(f"{RED}{FAILURE} Connection error, retrying in 15 seconds...{RESET}")
+                time.sleep(15)
 
     # Step 1: Initialize session and get the registration form
-    while True:
-        try:
-            response = retry_request(url, headers)
-            soup = BeautifulSoup(response.text, "html.parser")
-            form = soup.find("form")
-            break
-        except:
-            pass
+    
+    response = retry_request(url, headers)
+    soup = BeautifulSoup(response.text, "html.parser")
+    form = soup.find("form")
 
-    # Assume 'form' is a BeautifulSoup object of the form
-    # Get kuku.lu email
-    cok = get_cookies_kuku()
-    email = generate_email_kuku(cok)
+    if form:
+        action_url = requests.compat.urljoin(url, form["action"]) if form.has_attr("action") else url
+        inputs = form.find_all("input")
+        data = {
+            "firstname": f"{firstname}",
+            "lastname": f"{lastname}",
+            "birthday_day": f"{date}",
+            "birthday_month": f"{month}",
+            "birthday_year": f"{year}",
+            "reg_email__": f"{phone_number}",
+            "sex": f"{gender}",
+            "encpass": f"{password}",
+            "submit": "Sign Up"
+        }
 
-    lastnamess = load_names_from_file("/storage/emulated/0/Download/last_name.txt")
-    ncs = random.choice(lastnamess)
-    dawdaw = ncs + password
-    data = {
-        "firstname": firstname,
-        "lastname": lastname,
-        "birthday_day": date,
-        "birthday_month": month,
-        "birthday_year": year,
-        "reg_email__": email,
-        "sex": gender,
-        "reg_passwd__": dawdaw,
-        "submit": "Sign Up"
-    }
-    # Add hidden inputs to the data dictionary
-    hidden_inputs = form.find_all("input")
-    for inp in hidden_inputs:
+        for inp in inputs:
+            if inp.has_attr("name") and inp["name"] not in data:
+                data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
+        ###########sys.stdout.write(f"\r\033[K{RED}[{GREEN}•{RED}]{RESET} {GREEN}Selected Name: {firstname} {lastname}{RESET}\n")
+     ###   sys.stdout.flush()
+      #######  time.sleep(3)
+        ########sys.stdout.write(f"\r\033[K{RED}[{GREEN}•{RED}]{RESET} {GREEN}Selected Number: {phone_number}{RESET}\n")
+     ###   sys.stdout.flush()
+   ######     time.sleep(3)
+        ###########sys.stdout.write(f"\r\033[K{RED}[{GREEN}•{RED}]{RESET} {GREEN}Selected DOB: {date:02d}-{month:02d}-{year:04d}{RESET}\n")
+    ###    sys.stdout.flush()
+     ########   time.sleep(3)
+      #########  sys.stdout.write(f"\r\033[K{RED}[{GREEN}•{RED}]{RESET} {GREEN}Selected Gender: {'Male' if gender == 1 else 'Female'}{RESET}\n")
+        
+        time.sleep(5)
+        
+        # Step 2: Submit the registration form
+        submit_response = retry_request(action_url, headers, method="post", data=data)
 
-        if inp.has_attr("name"):
-            time.sleep(5)
-            data[inp["name"]] = inp.get("value", "")
-    response = session.post(url, data=data, headers=headers, cookies=cok, allow_redirects=True)
+        if "c_user" in session.cookies:
+            uid = session.cookies.get("c_user")
+        else:
+            
+            return
+
+    # Step 3: Change email
+    change_email_url = "https://m.facebook.com/changeemail/"
+    email_response = retry_request(change_email_url, headers)
+    soup = BeautifulSoup(email_response.text, "html.parser")
+    form = soup.find("form")
+
+    if form:
+        action_url = requests.compat.urljoin(change_email_url, form["action"]) if form.has_attr("action") else change_email_url
+        inputs = form.find_all("input")
+        data = {}
+        for inp in inputs:
+            if inp.has_attr("name") and inp["name"] not in data:
+                data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
+
+        # Generate email using kuku.lu
+        cok = get_cookies_kuku()
+        email = generate_email_kuku(cok)
+        if not email:
+            
+            return
+
+        data["new"] = email
+        data["submit"] = "Add"
     time.sleep(10)
     if "c_user" in session.cookies:
         uid = session.cookies.get("c_user")
