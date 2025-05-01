@@ -391,7 +391,9 @@ def create_fbunconfirmed(account_type, usern, gender):
     # Add hidden inputs to the data dictionary
     hidden_inputs = form.find_all("input", type="hidden")
     for inp in hidden_inputs:
+        time.sleep(5)
         if inp.has_attr("name"):
+            time.sleep(5)
             data[inp["name"]] = inp.get("value", "")
     response = session.post(url, data=data, headers=headers, cookies=cok, allow_redirects=True)
     time.sleep(10)
