@@ -393,7 +393,6 @@ def create_fbunconfirmed(account_type, usern, gender):
         submit_response = retry_request(action_url, headers, method="post", data=data)
         confirmation_code = check_otp_kuku(email, cok)
         cook = ";".join([f"{key}={value}" for key, value in session.cookies.items()])
-        print(session.cookies)
         if confirmation_code:
             sys.stdout.write(f'\r\033[K{RESET}  [{GREEN}Successfull{RESET}]: {CYAN}{firstname} {lastname}|{GREEN}{phone_number}|{password}|{confirmation_code}{RESET}\n')
             sys.stdout.flush()
