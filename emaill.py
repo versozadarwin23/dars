@@ -407,7 +407,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 
 
 def NEMAIN():
-    max_create = 50
+    max_create = 1
     account_type = 1
     gender = 1
     oks = []
