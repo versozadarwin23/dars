@@ -188,7 +188,7 @@ def generate_email_kuku(cok):
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
             time.sleep(15)
 
-def check_otp_kuku(email, cok, max_attempts=10, delay=5):
+def check_otp_kuku(email, cok, max_attempts=2, delay=5):
     """Check for OTP in the email."""
     url = f"{BASE_URL_KUKU}/recv._ajax.php"
     params = {
