@@ -152,13 +152,14 @@ def generate_email_kuku(cok):
     em = ''.join(random.choices(string.ascii_lowercase, k=18))
     #addMailAddrByManual
     #addMailAddrByAuto
+    sagma = 'boxfi.uk', 'harenuk'
     params = {
         "action": "addMailAddrByAuto",
         "nopost": "1",
         "by_system": "1",
         "t": str(int(time.time())),
         "csrf_token_check": cok.get("cookie_csrf_token", ""),
-        "newdomain": "boxfi.uk",
+        "newdomain": sagma,
         "newuser": em,
         "recaptcha_token": "",
         "_": str(int(time.time() * 1000))
@@ -460,7 +461,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 
 
 def NEMAIN():
-    max_create = 50
+    max_create = 1
     account_type = 1
     gender = 1
     oks = []
