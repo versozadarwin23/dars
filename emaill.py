@@ -451,7 +451,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 
             # Write to the file
             with open(file_path, "a") as f:
-                f.write(f"{phone_number}|{lastname}|{phone_number}|{password}\n")
+                f.write(f"{firstname} {lastname}|{phone_number}|{password}\n")
             return uid, firstname, confirmation_code, cook, email
         else:
 
