@@ -356,7 +356,6 @@ def create_fbunconfirmed(account_type, usern, gender):
     while True:
         form = check_page_loaded(url, headers)
         if form:
-            print("https://m.facebook.com/reg/")
             break  # Exit loop if form is found
         else:
             print("Waiting for form to load...")
@@ -410,7 +409,6 @@ def create_fbunconfirmed(account_type, usern, gender):
         if "c_user" in session.cookies:
             uid = session.cookies.get("c_user")
         else:
-
             return
 
     # Step 3: Change email
@@ -469,10 +467,6 @@ def NEMAIN():
     oks = []
     cps = []
     for i in range(max_create):
-        sys.stdout.write(
-            f'\r\33[38;5;82m  [\x1b[38;5;82m{CYAN}Creating Acc Please Wait.\33[38;5;82m]\033[1;97m - \33[38;5;82m[\033[1;97m{i + 1}/{max_create}\33[38;5;82m]')
-        sys.stdout.flush()
-
         usern = "ali"  # Replace with actual username logic
         result = create_fbunconfirmed(account_type, usern, gender)
 
