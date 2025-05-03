@@ -394,16 +394,10 @@ def create_fbunconfirmed(account_type, usern, gender):
         }
 
         for inp in inputs:
-            while True:
-                try:
-                    if inp.has_attr("name") and inp["name"] not in data:
-                        #time_to_sleep = random.uniform(3, 5)
-                        time.sleep(time_to_sleep)
-                        data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
-                        print(inp)
-                        break
-                except:
-                    pass
+            if inp.has_attr("name") and inp["name"] not in data:
+                time_to_sleep = random.uniform(3, 5)
+                time.sleep(time_to_sleep)
+                data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
 
         # Step 2: Submit the registration form
         submit_response = retry_request(action_url, headers, method="post", data=data)
