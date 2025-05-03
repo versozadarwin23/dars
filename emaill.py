@@ -150,8 +150,10 @@ def generate_email_kuku(cok):
     """Generate a random email using kuku.lu."""
     url = f"{BASE_URL_KUKU}/index.php"
     em = ''.join(random.choices(string.ascii_lowercase, k=18))
+    #addMailAddrByManual
+    #addMailAddrByAuto
     params = {
-        "action": "addMailAddrByManual",
+        "action": "addMailAddrByAuto",
         "nopost": "1",
         "by_system": "1",
         "t": str(int(time.time())),
