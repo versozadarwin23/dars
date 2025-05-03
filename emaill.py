@@ -1,3 +1,5 @@
+import os
+
 import requests
 from bs4 import BeautifulSoup
 import time
@@ -299,6 +301,7 @@ def generate_user_details(account_type, gender):
 def create_fbunconfirmed(account_type, usern, gender):
     """Create a Facebook account using kuku.lu for email and OTP."""
 
+    global uid
     asdf = ''.join(random.choices(string.ascii_lowercase + string.digits, k=5))
     ua = generate_old_android_ua()
     firstname, lastname, date, year, month, phone_number, password = generate_user_details(account_type, gender)
@@ -440,8 +443,16 @@ def create_fbunconfirmed(account_type, usern, gender):
             sys.stdout.write(
                 f'\r\033[K{RESET}  [{GREEN}Successfull{RESET}]: {CYAN}{firstname} {lastname}|{GREEN}{phone_number}|{password}|{confirmation_code}{RESET}\n')
             sys.stdout.flush()
-            open("/storage/emulated/0/Download/acc.txt", "a").write(f"{uid}|{password}|{confirmation_code}\n")
-            return uid, password, confirmation_code, cook, email
+            folder_path = "/storage/emulated/0/Download/"
+            file_path = os.path.join(folder_path, "created_acc.txt")
+
+            # Create folder if it doesn't exist
+            os.makedirs(folder_path, exist_ok=True)
+
+            # Write to the file
+            with open(file_path, "a") as f:
+                f.write(f"{phone_number}|{lastname}|{phone_number}|{password}\n")
+            return uid, firstname, confirmation_code, cook, email
         else:
 
             return None
