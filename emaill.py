@@ -1,3 +1,4 @@
+from requests_html import HTMLSession
 import requests
 from bs4 import BeautifulSoup
 import time
@@ -41,7 +42,7 @@ LOGO = fr"""
    {RED}[{GREEN}•{RED}]{RESET}   IP Address  :{GREEN}"Class A, B, C" {RESET}
     Use Facebook lite only! if suspended uninstall and install
     Airplane mode 10 seconds 
-               
+
 {YELLOW}   
 ═════════════════════════════════════════════════════════════════
 """
@@ -55,6 +56,7 @@ FAILURE = "✅"
 INFO = "✅"
 WARNING = "⚠️"
 LOADING = "⏳"
+
 
 def generate_old_android_ua():
     """Generate an old Android user agent."""
@@ -109,6 +111,7 @@ def generate_old_android_ua():
 
     return ua
 
+
 def get_cookies_kuku():
     url = f"{BASE_URL_KUKU}/en.php"
     headers = {
@@ -140,6 +143,7 @@ def get_cookies_kuku():
     except Exception as e:
         print(f"{RED}{FAILURE} Error fetching cookies: {e}{RESET}")
         return None
+
 
 def generate_email_kuku(cok):
     """Generate a random email using kuku.lu."""
@@ -188,7 +192,8 @@ def generate_email_kuku(cok):
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
             time.sleep(15)
 
-def check_otp_kuku(email, cok, max_attempts=2, delay=5):
+
+def check_otp_kuku(email, cok, max_attempts=10, delay=5):
     """Check for OTP in the email."""
     url = f"{BASE_URL_KUKU}/recv._ajax.php"
     params = {
@@ -236,8 +241,8 @@ def check_otp_kuku(email, cok, max_attempts=2, delay=5):
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
             time.sleep(15)
 
-
     return None
+
 
 def load_names_from_file(file_path):
     with open(file_path, 'r') as file:
@@ -261,6 +266,7 @@ def get_names(account_type, gender):
 
     return firstname, lastname
 
+
 def generate_random_phone_number():
     """Generate a random phone number."""
     random_number = str(random.randint(1000000, 9999999))
@@ -274,20 +280,21 @@ def generate_random_phone_number():
 
     return number
 
+
 def generate_random_password():
     password = ''.join(random.choices(string.ascii_letters + string.digits + "@#$&_!", k=8))
     return password
 
+
 def generate_user_details(account_type, gender):
     """Generate random user details."""
     firstname, lastname = get_names(account_type, gender)
-    year = random.randint(1999, 2025)
+    year = random.randint(1978, 2001)
     date = random.randint(1, 28)
     month = random.randint(1, 12)
     password = generate_random_password()
     phone_number = generate_random_phone_number()
     return firstname, lastname, date, year, month, phone_number, password
-
 
 
 def create_fbunconfirmed(account_type, usern, gender):
@@ -297,7 +304,7 @@ def create_fbunconfirmed(account_type, usern, gender):
     ua = generate_old_android_ua()
     firstname, lastname, date, year, month, phone_number, password = generate_user_details(account_type, gender)
 
-        def check_page_loaded(url, headers):
+    def check_page_loaded(url, headers):
         response = requests.get(url, headers=headers)
         soup = BeautifulSoup(response.text, 'html.parser')
         form = soup.find("form")
@@ -351,19 +358,22 @@ def create_fbunconfirmed(account_type, usern, gender):
             print("Waiting for form to load...")
             time.sleep(3)  # Wait for 3 seconds before checking again
 
+    # Retry request function
     def retry_request(url, headers, method="get", data=None):
-        global response, uid
         while True:
             try:
                 if method == "get":
                     response = session.get(url, headers=headers)
                 elif method == "post":
                     response = session.post(url, headers=headers, data=data)
-                return response
+                # Check for successful response
+                if response.status_code == 200:
+                    return response
+                else:
+                    print(f"Unexpected status code: {response.status_code}, retrying in 3 seconds...")
             except requests.exceptions.ConnectionError:
-                print(f"{RED}{FAILURE} Connection error, retrying in 3 seconds...{RESET}")
-                time.sleep(3)
-
+                print("Connection error, retrying in 3 seconds...")
+            time.sleep(3)
 
     response = retry_request(url, headers)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -385,10 +395,16 @@ def create_fbunconfirmed(account_type, usern, gender):
         }
 
         for inp in inputs:
-            if inp.has_attr("name") and inp["name"] not in data:
-                time_to_sleep = random.uniform(5, 8)
-                time.sleep(time_to_sleep)
-                data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
+            while True:
+                try:
+                    if inp.has_attr("name") and inp["name"] not in data:
+                        time_to_sleep = random.uniform(3, 5)
+                        time.sleep(time_to_sleep)
+                        data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
+                        print(inp)
+                        break
+                except:
+                    pass
 
         # Step 2: Submit the registration form
         submit_response = retry_request(action_url, headers, method="post", data=data)
@@ -406,7 +422,8 @@ def create_fbunconfirmed(account_type, usern, gender):
     form = soup.find("form")
 
     if form:
-        action_url = requests.compat.urljoin(change_email_url, form["action"]) if form.has_attr("action") else change_email_url
+        action_url = requests.compat.urljoin(change_email_url, form["action"]) if form.has_attr(
+            "action") else change_email_url
         inputs = form.find_all("input")
         data = {}
         for inp in inputs:
@@ -417,7 +434,6 @@ def create_fbunconfirmed(account_type, usern, gender):
         cok = get_cookies_kuku()
         email = generate_email_kuku(cok)
         if not email:
-
             return
 
         data["new"] = email
@@ -428,7 +444,8 @@ def create_fbunconfirmed(account_type, usern, gender):
         confirmation_code = check_otp_kuku(email, cok)
         cook = ";".join([f"{key}={value}" for key, value in session.cookies.items()])
         if confirmation_code:
-            sys.stdout.write(f'\r\033[K{RESET}  [{GREEN}Successfull{RESET}]: {CYAN}{firstname} {lastname}|{GREEN}{phone_number}|{password}|{confirmation_code}{RESET}\n')
+            sys.stdout.write(
+                f'\r\033[K{RESET}  [{GREEN}Successfull{RESET}]: {CYAN}{firstname} {lastname}|{GREEN}{phone_number}|{password}|{confirmation_code}{RESET}\n')
             sys.stdout.flush()
             open("/storage/emulated/0/Download/acc.txt", "a").write(f"{uid}|{password}|{confirmation_code}\n")
             return uid, password, confirmation_code, cook, email
@@ -439,17 +456,16 @@ def create_fbunconfirmed(account_type, usern, gender):
         return None
 
 
-
 def NEMAIN():
-    max_create = 1
+    max_create = 50
     account_type = 1
     gender = 1
     oks = []
     cps = []
     for i in range(max_create):
-        sys.stdout.write(f'\r\33[38;5;82m  [\x1b[38;5;82m{CYAN}Creating Acc Please Wait.\33[38;5;82m]\033[1;97m - \33[38;5;82m[\033[1;97m{i + 1}/{max_create}\33[38;5;82m]')
+        sys.stdout.write(
+            f'\r\33[38;5;82m  [\x1b[38;5;82m{CYAN}Creating Acc Please Wait.\33[38;5;82m]\033[1;97m - \33[38;5;82m[\033[1;97m{i + 1}/{max_create}\33[38;5;82m]')
         sys.stdout.flush()
-
 
         usern = "ali"  # Replace with actual username logic
         result = create_fbunconfirmed(account_type, usern, gender)
@@ -460,6 +476,7 @@ def NEMAIN():
             cps.append(result)
 
     print(f"{BLUE}{INFO}   Batch creation completed{RESET}")
+
 
 # Run the main function
 if __name__ == "__main__":
