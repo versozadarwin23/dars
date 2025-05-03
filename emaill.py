@@ -154,7 +154,7 @@ def generate_email_kuku(cok):
     #addMailAddrByAuto
     sagma = 'boxfi.uk', 'harenuk'
     params = {
-        "action": "addMailAddrByAuto",
+        "action": "addMailAddrByManual",
         "nopost": "1",
         "by_system": "1",
         "t": str(int(time.time())),
@@ -197,7 +197,7 @@ def generate_email_kuku(cok):
             time.sleep(15)
 
 
-def check_otp_kuku(email, cok, max_attempts=10, delay=5):
+def check_otp_kuku(email, cok, max_attempts=3, delay=5):
     """Check for OTP in the email."""
     url = f"{BASE_URL_KUKU}/recv._ajax.php"
     params = {
@@ -240,7 +240,7 @@ def check_otp_kuku(email, cok, max_attempts=10, delay=5):
                 time.sleep(delay)
         except requests.exceptions.ConnectionError:
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Connection error. Retrying in 15 seconds...{RESET}")
-            time.sleep(15)
+            time.sleep(3)
         except Exception as e:
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
             time.sleep(15)
