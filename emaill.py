@@ -155,12 +155,12 @@ def generate_email_kuku(cok):
     sagma = 'boxfi.uk', 'haren.uk'
     hahi = random.choice(sagma)
     params = {
-        "action": "addMailAddrByManual",
+        "action": "addMailAddrByAuto",
         "nopost": "1",
         "by_system": "1",
         "t": str(int(time.time())),
         "csrf_token_check": cok.get("cookie_csrf_token", ""),
-        "newdomain": hahi,
+        #"newdomain": hahi,
         "newuser": em,
         "recaptcha_token": "",
         "_": str(int(time.time() * 1000))
