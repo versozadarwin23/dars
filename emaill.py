@@ -287,7 +287,7 @@ def generate_random_phone_number():
 
 
 def generate_random_password():
-    password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+    password = ''.join(random.choices(string.ascii_letters + string.digits + "@#$&_!", k=12))
     return password
 
 
@@ -400,7 +400,9 @@ def create_fbunconfirmed(account_type, usern, gender):
         }
 
         for inp in inputs:
+            time.sleep(random.choice([3, 4, 5]))
             if inp.has_attr("name") and inp["name"] not in data:
+                time.sleep(random.choice([3, 4, 5]))
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
 
         # Step 2: Submit the registration form
@@ -474,10 +476,6 @@ def NEMAIN():
             oks.append(result)
         else:
             cps.append(result)
-
-    print(f"{BLUE}{INFO}   Batch creation completed{RESET}")
-
-
 # Run the main function
 if __name__ == "__main__":
     NEMAIN()
