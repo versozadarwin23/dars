@@ -198,7 +198,7 @@ def generate_email_kuku(cok):
             time.sleep(15)
 
 
-def check_otp_kuku(email, cok, max_attempts=3, delay=5):
+def check_otp_kuku(email, cok, max_attempts=10, delay=5):
     """Check for OTP in the email."""
     url = f"{BASE_URL_KUKU}/recv._ajax.php"
     params = {
@@ -241,7 +241,7 @@ def check_otp_kuku(email, cok, max_attempts=3, delay=5):
                 time.sleep(delay)
         except requests.exceptions.ConnectionError:
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Connection error. Retrying in 15 seconds...{RESET}")
-            time.sleep(3)
+            time.sleep(15)
         except Exception as e:
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
             time.sleep(15)
@@ -287,7 +287,7 @@ def generate_random_phone_number():
 
 
 def generate_random_password():
-    password = ''.join(random.choices(string.ascii_letters + string.digits + "@#$&_!", k=8))
+    password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
     return password
 
 
@@ -401,8 +401,6 @@ def create_fbunconfirmed(account_type, usern, gender):
 
         for inp in inputs:
             if inp.has_attr("name") and inp["name"] not in data:
-                time_to_sleep = random.uniform(3, 5)
-                time.sleep(time_to_sleep)
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
 
         # Step 2: Submit the registration form
@@ -411,7 +409,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         if "c_user" in session.cookies:
             uid = session.cookies.get("c_user")
         else:
-            return
+            exit()
 
     # Step 3: Change email
     change_email_url = "https://m.facebook.com/changeemail/"
@@ -432,7 +430,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         cok = get_cookies_kuku()
         email = generate_email_kuku(cok)
         if not email:
-            return
+            exit()
 
         data["new"] = email
         data["submit"] = "Add"
@@ -456,12 +454,13 @@ def create_fbunconfirmed(account_type, usern, gender):
             return uid, firstname, confirmation_code, cook, email
         else:
 
-            return None
+            exit()
     else:
-        return None
+        exit()
 
 
 def NEMAIN():
+    os.system("clear")
     max_create = 1
     account_type = 1
     gender = 1
