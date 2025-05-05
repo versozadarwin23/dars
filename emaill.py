@@ -335,7 +335,7 @@ def create_fbunconfirmed(account_type, usern, gender):
     # Randomly choose a User-Agent
     random_user_agent = random.choice(user_agents)
 
-    url = "https://limited.facebook.com/reg/?is_two_steps_login=0&cid=103&refsrc=deprecated&soft=hjk"
+    url = "https://m.facebook.com/reg/?is_two_steps_login=0&cid=103&refsrc=deprecated&soft=hjk"
     headers = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "accept-language": "en-US,en;q=0.9",
@@ -400,8 +400,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         }
 
         for inp in inputs:
-            time.sleep(random.choice([3, 4, 5]))
-            if inp.has_attr("name") and inp["name"] not in data:
+            if inp.has_attr("name") and inp["name"] not in data:
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
 
         # Step 2: Submit the registration form
