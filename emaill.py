@@ -186,16 +186,11 @@ def generate_email_kuku(cok):
             if response.status_code == 200:
                 if response.text.startswith("OK:"):
                     return response.text.split("OK:")[1].strip()
-                else:
-                    time.sleep(15)
-            else:
-                time.sleep(15)
         except requests.exceptions.ConnectionError:
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Connection error. Retrying in 15 seconds...{RESET}")
-            time.sleep(15)
         except Exception as e:
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
-            time.sleep(15)
+            time.sleep(3)
 
 
 def check_otp_kuku(email, cok, max_attempts=10, delay=5):
