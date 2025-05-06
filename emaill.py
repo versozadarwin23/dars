@@ -431,7 +431,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         confirmation_code = check_otp_kuku(email, cok)
         cook = ";".join([f"{key}={value}" for key, value in session.cookies.items()])
         if confirmation_code:
-            sys.stdout.write(f'\r\033[K{RESET}{CYAN}{firstname} {lastname}	{GREEN}{phone_number}	{password}	{profie_link}	{confirmation_code}{RESET}\n')
+            sys.stdout.write(f'\r\033[K{RESET}{CYAN}{firstname} {lastname}|{GREEN}{phone_number}|{password}|{confirmation_code}{RESET}\n')
             sys.stdout.flush()
             folder_path = "/storage/emulated/0/Download/"
             file_path = os.path.join(folder_path, "created_acc.txt")
@@ -441,7 +441,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 
             # Write to the file
             with open(file_path, "a") as f:
-                f.write(f"{firstname} {lastname}|{phone_number}|{password}|{profie_link}\n")
+                sys.stdout.write(f'\r\033[K{RESET}{CYAN}{firstname} {lastname}	{GREEN}{phone_number}	{password}	{profie_link}	{confirmation_code}{RESET}\n')
             return uid, firstname, confirmation_code, cook, email
 
 def NEMAIN():
