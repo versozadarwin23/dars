@@ -403,13 +403,10 @@ def create_fbunconfirmed(account_type, usern, gender):
             if inp.has_attr("name") and inp["name"] not in data:
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
 
-        # Step 2: Submit the registration form
-        submit_response = retry_request(action_url, headers, method="post", data=data)
-
         if "c_user" in session.cookies:
             uid = session.cookies.get("c_user")
         else:
-            exit()
+            return
 
     # Step 3: Change email
     change_email_url = "https://m.facebook.com/changeemail/"
@@ -429,14 +426,9 @@ def create_fbunconfirmed(account_type, usern, gender):
         # Generate email using kuku.lu
         cok = get_cookies_kuku()
         email = generate_email_kuku(cok)
-        if not email:
-            exit()
-
         data["new"] = email
         data["submit"] = "Add"
 
-        # Step 4: Submit email change form
-        submit_response = retry_request(action_url, headers, method="post", data=data)
         confirmation_code = check_otp_kuku(email, cok)
         cook = ";".join([f"{key}={value}" for key, value in session.cookies.items()])
         if confirmation_code:
@@ -444,24 +436,20 @@ def create_fbunconfirmed(account_type, usern, gender):
             sys.stdout.flush()
             folder_path = "/storage/emulated/0/Download/"
             file_path = os.path.join(folder_path, "created_acc.txt")
-
-            # Create folder if it doesn't exist
             os.makedirs(folder_path, exist_ok=True)
-
-            # Write to the file
             with open(file_path, "a") as f:
                 f.write(f"{firstname} {lastname}|{phone_number}|{password}\n")
             return uid, firstname, confirmation_code, cook, email
         else:
+            return None
 
-            exit()
     else:
-        exit()
+        return None
 
 
 def NEMAIN():
     os.system("clear")
-    max_create = 1
+    max_create = 5
     account_type = 1
     gender = 1
     oks = []
