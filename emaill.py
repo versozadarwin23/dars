@@ -62,7 +62,6 @@ LOADING = "⏳"
 def generate_old_android_ua():
     """Generate an old Android user agent."""
     random.seed(datetime.now().timestamp())
-
     android_versions = [
         ("11", "RQ1A.210205.003"),
         ("11", "RP1A.200720.012"),
@@ -160,7 +159,7 @@ def generate_email_kuku(cok):
         "by_system": "1",
         "t": str(int(time.time())),
         "csrf_token_check": cok.get("cookie_csrf_token", ""),
-        #"newdomain": hahi,
+        # "newdomain": hahi,
         "newuser": em,
         "recaptcha_token": "",
         "_": str(int(time.time() * 1000))
@@ -187,13 +186,14 @@ def generate_email_kuku(cok):
                 if response.text.startswith("OK:"):
                     return response.text.split("OK:")[1].strip()
         except requests.exceptions.ConnectionError:
-            print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Connection error. Retrying in 15 seconds...{RESET}")
+            print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Connection error. Retrying in 3 seconds...{RESET}")
+            time.sleep(3)
         except Exception as e:
-            print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
+            print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 3 seconds...{RESET}")
             time.sleep(3)
 
 
-def check_otp_kuku(email, cok, max_attempts=10, delay=5):
+def check_otp_kuku(email, cok, max_attempts=10, delay=3):
     """Check for OTP in the email."""
     url = f"{BASE_URL_KUKU}/recv._ajax.php"
     params = {
@@ -235,11 +235,11 @@ def check_otp_kuku(email, cok, max_attempts=10, delay=5):
             else:
                 time.sleep(delay)
         except requests.exceptions.ConnectionError:
-            print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Connection error. Retrying in 15 seconds...{RESET}")
-            time.sleep(15)
+            print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Connection error. Retrying in 3 seconds...{RESET}")
+            time.sleep(3)
         except Exception as e:
-            print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 15 seconds...{RESET}")
-            time.sleep(15)
+            print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 3 seconds...{RESET}")
+            time.sleep(3)
 
     return None
 
@@ -282,7 +282,7 @@ def generate_random_phone_number():
 
 
 def generate_random_password():
-    password = ''.join(random.choices(string.ascii_letters + string.digits + "@#$&_!", k=12))
+    password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
     return password
 
 
@@ -300,7 +300,7 @@ def generate_user_details(account_type, gender):
 def create_fbunconfirmed(account_type, usern, gender):
     """Create a Facebook account using kuku.lu for email and OTP."""
 
-    global uid
+    global uid, profie_link
     asdf = ''.join(random.choices(string.ascii_lowercase + string.digits, k=5))
     ua = generate_old_android_ua()
     firstname, lastname, date, year, month, phone_number, password = generate_user_details(account_type, gender)
@@ -344,7 +344,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         "sec-fetch-user": "?1",
         "upgrade-insecure-requests": "1",
         "user-agent": random_user_agent,
-        "viewport-width": "720"
+        # "viewport-width": "720"
     }
 
     session = requests.Session()
@@ -398,10 +398,12 @@ def create_fbunconfirmed(account_type, usern, gender):
             if inp.has_attr("name") and inp["name"] not in data:
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
 
+        # Step 2: Submit the registration form
+        submit_response = retry_request(action_url, headers, method="post", data=data)
+
         if "c_user" in session.cookies:
             uid = session.cookies.get("c_user")
-        else:
-            return
+            profie_link = 'https://m.facebook.com/' + uid
 
     # Step 3: Change email
     change_email_url = "https://m.facebook.com/changeemail/"
@@ -424,6 +426,8 @@ def create_fbunconfirmed(account_type, usern, gender):
         data["new"] = email
         data["submit"] = "Add"
 
+        # Step 4: Submit email change form
+        submit_response = retry_request(action_url, headers, method="post", data=data)
         confirmation_code = check_otp_kuku(email, cok)
         cook = ";".join([f"{key}={value}" for key, value in session.cookies.items()])
         if confirmation_code:
@@ -431,16 +435,14 @@ def create_fbunconfirmed(account_type, usern, gender):
             sys.stdout.flush()
             folder_path = "/storage/emulated/0/Download/"
             file_path = os.path.join(folder_path, "created_acc.txt")
+
+            # Create folder if it doesn't exist
             os.makedirs(folder_path, exist_ok=True)
+
+            # Write to the file
             with open(file_path, "a") as f:
-                f.write(f"{firstname} {lastname}|{phone_number}|{password}\n")
+                f.write(f"{firstname} {lastname}|{phone_number}|{password}|{profie_link}\n")
             return uid, firstname, confirmation_code, cook, email
-        else:
-            return None
-
-    else:
-        return None
-
 
 def NEMAIN():
     os.system("clear")
@@ -457,6 +459,9 @@ def NEMAIN():
             oks.append(result)
         else:
             cps.append(result)
+
+    print(f"{BLUE}{INFO}   Batch creation completed{RESET}")
+
 # Run the main function
 if __name__ == "__main__":
     NEMAIN()
