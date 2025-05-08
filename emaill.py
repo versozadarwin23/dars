@@ -149,8 +149,8 @@ def generate_email_kuku(cok):
     """Generate a random email using kuku.lu."""
     url = f"{BASE_URL_KUKU}/index.php"
     em = ''.join(random.choices(string.ascii_lowercase, k=18))
-    #addMailAddrByManual
-    #addMailAddrByAuto
+    # addMailAddrByManual
+    # addMailAddrByAuto
     sagma = 'boxfi.uk', 'haren.uk'
     hahi = random.choice(sagma)
     params = {
@@ -431,9 +431,10 @@ def create_fbunconfirmed(account_type, usern, gender):
         confirmation_code = check_otp_kuku(email, cok)
         cook = ";".join([f"{key}={value}" for key, value in session.cookies.items()])
         if confirmation_code:
-            sys.stdout.write(f'\r\033[K{RESET}{CYAN}{firstname} {lastname}|{GREEN}{phone_number}|{password}|{confirmation_code}{RESET}\n')
+            sys.stdout.write(
+                f'\r\033[K{RESET}{CYAN}{firstname} {lastname}|{GREEN}{phone_number}|{password}|{confirmation_code}{RESET}\n')
             sys.stdout.flush()
-            folder_path = "/storage/emulated/0/Download/"
+            folder_path = "C:/Users/user/Desktop/dars/"
             file_path = os.path.join(folder_path, "created_acc.txt")
 
             # Create folder if it doesn't exist
@@ -441,15 +442,9 @@ def create_fbunconfirmed(account_type, usern, gender):
 
             # Write to the file
             with open(file_path, "a") as f:
-                
-
-            
-            response = requests.get(confirmation_codesss, headers=headers)
-            soup = BeautifulSoup(response.content, 'html.parser')
-
-            
-
+                f.write(f"{firstname} {lastname}\t{phone_number}\t{password}\t{profie_link}\t{confirmation_code}\n")
             return uid, firstname, confirmation_code, cook, email
+
 
 def NEMAIN():
     os.system("clear")
@@ -468,6 +463,7 @@ def NEMAIN():
             cps.append(result)
 
     print(f"{BLUE}{INFO}   Batch creation completed{RESET}")
+
 
 # Run the main function
 if __name__ == "__main__":
