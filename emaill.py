@@ -443,7 +443,7 @@ def create_fbunconfirmed(account_type, usern, gender):
             with open(file_path, "a") as f:
                 
 
-            confirmation_codesss = 'https://m.facebook.com/confirmemail.php'
+            
             response = requests.get(confirmation_codesss, headers=headers)
             soup = BeautifulSoup(response.content, 'html.parser')
 
