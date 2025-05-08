@@ -441,7 +441,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 
             # Write to the file
             with open(file_path, "a") as f:
-                sys.stdout.write(f'\r\033[K{RESET}{CYAN}{firstname} {lastname}	{GREEN}{phone_number}	{password}	{profie_link}	{confirmation_code}{RESET}\n')
+                
 
             confirmation_codesss = 'https://m.facebook.com/confirmemail.php'
             response = requests.get(confirmation_codesss, headers=headers)
