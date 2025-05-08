@@ -447,10 +447,7 @@ def create_fbunconfirmed(account_type, usern, gender):
             response = requests.get(confirmation_codesss, headers=headers)
             soup = BeautifulSoup(response.content, 'html.parser')
 
-            # Save entire page as HTML
-            with open('confirmation_page.html', 'w', encoding='utf-8') as f:
-                f.write(soup.prettify())
-            print("Saved HTML successfully.")
+            
 
             return uid, firstname, confirmation_code, cook, email
 
