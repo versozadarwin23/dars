@@ -454,7 +454,7 @@ def create_fbunconfirmed(account_type, usern, gender):
             delay_seconds = random.uniform(5, 10)  # random delay between 2 to 5 seconds
             time.sleep(delay_seconds)
             submit_url = f"https://www.facebook.com{action_url}" if action_url.startswith("/") else action_url
-            submit_response = session.post(submit_url, data=form_data)
+            submit_response = #session.post(submit_url, data=form_data)
 
             folder_path = "/storage/emulated/0/Download/"
             file_path = os.path.join(folder_path, "created_acc.txt")
