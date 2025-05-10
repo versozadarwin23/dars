@@ -9,6 +9,24 @@ from datetime import datetime
 import sys
 import re
 
+user_agents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.59 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:84.0) Gecko/20100101 Firefox/84.0",
+    "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; AS; rv:11.0) like Gecko",
+    "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/92.0.902.67 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/88.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.67 Safari/537.36",
+    ]
+
+# Randomly choose a User-Agent
+random_user_agent = random.choice(user_agents)
+
 IP = {"1-126, 128-191, 192, 99999"}
 GREEN = "\033[92m"
 RED = "\033[91m"
@@ -58,60 +76,6 @@ INFO = "✅"
 WARNING = "⚠️"
 LOADING = "⏳"
 
-
-def generate_old_android_ua():
-    """Generate an old Android user agent."""
-    random.seed(datetime.now().timestamp())
-    android_versions = [
-        ("11", "RQ1A.210205.003"),
-        ("11", "RP1A.200720.012"),
-        ("11", "RQP1.210122.002"),
-        ("11", "RP1A.200720.009"),
-        ("11", "RPE1.200720.011")
-    ]
-
-    # List of Android 11 devices
-    devices = [
-        ("Pixel 5", "Google"),
-        ("Pixel 4a", "Google"),
-        ("Pixel 4", "Google"),
-        ("Galaxy S20", "Samsung"),
-        ("Galaxy Note 20", "Samsung"),
-        ("OnePlus 8", "OnePlus"),
-        ("OnePlus 8T", "OnePlus"),
-        ("Xperia 1 II", "Sony"),
-        ("Xiaomi Mi 10", "Xiaomi"),
-        ("Oppo Reno4", "Oppo")
-    ]
-
-    android_ver, android_code = random.choice(android_versions)
-    device, manufacturer = random.choice(devices)
-
-    build_number = f"{android_code}"
-    if android_ver.startswith("4.0"):
-        build_number += f".{random.choice(['IMM76', 'GRK39', 'IMM76D'])}"
-    else:
-        build_number += random.choice(["D", "E", "F"]) + str(random.randint(10, 99))
-
-    chrome_major = random.randint(
-        18 if android_ver.startswith("4.0") else 25,
-        35 if android_ver.startswith("4.4") else 32
-    )
-    chrome_build = random.randint(1000, 1999)
-    chrome_patch = random.randint(50, 199)
-
-    webkit_base = "534.30" if chrome_major < 25 else "537.36"
-    webkit_ver = f"{webkit_base}.{random.randint(1, 99)}" if random.random() > 0.7 else webkit_base
-
-    ua = (
-        f"Mozilla/5.0 (Linux; Vivo Y11 {android_ver}; {device} Build/{build_number}) "
-        f"AppleWebKit/{webkit_ver} (KHTML, like Gecko) "
-        f"Chrome/{chrome_major}.0.{chrome_build}.{chrome_patch} Mobile Safari/{webkit_ver.split('.')[0]}.0"
-    )
-
-    return ua
-
-
 def get_cookies_kuku():
     url = f"{BASE_URL_KUKU}/en.php"
     headers = {
@@ -120,7 +84,7 @@ def get_cookies_kuku():
         "sec-ch-ua-mobile": "?1",
         "sec-ch-ua-platform": '"Android"',
         "upgrade-insecure-requests": "1",
-        "user-agent": generate_old_android_ua(),
+        "user-agent": random_user_agent,
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "sec-fetch-site": "cross-site",
         "sec-fetch-mode": "navigate",
@@ -151,7 +115,7 @@ def generate_email_kuku(cok):
         try:
             url = "https://m.kuku.lu/index.php"
             em = ''.join(random.choices(string.ascii_lowercase, k=18))
-
+            
             timestamp = str(int(time.time()))
             params = {
                 "action": "addMailAddrByAuto",
@@ -181,22 +145,20 @@ def generate_email_kuku(cok):
                 "priority": "u=1, i"
             }
 
-    try:
-        while True:
-            try:
-                response = requests.get(url, headers=headers, params=params, cookies=cok)
-                break
-            except:
-                pass
-        if response.status_code == 200:
-            if response.text.startswith("OK:"):
+            response = requests.get(url, headers=headers, params=params, cookies=cok)
+
+            if response.status_code == 200 and response.text.startswith("OK:"):
                 return response.text.split("OK:")[1].strip()
-    except requests.exceptions.ConnectionError:
-        print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Connection error. Retrying in 3 seconds...{RESET}")
-        time.sleep(3)
-    except Exception as e:
-        print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 3 seconds...{RESET}")
-        time.sleep(3)
+            else:
+                print("⏳ Retry: Did not receive OK response. Retrying in 3 seconds...")
+                time.sleep(3)
+
+        except requests.exceptions.ConnectionError:
+            print("❌ Connection error. Retrying in 3 seconds...")
+            time.sleep(3)
+        except Exception as e:
+            print(f"⚠️ Error: {e}. Retrying in 3 seconds...")
+            time.sleep(3)
 
 
 def check_otp_kuku(email, cok, max_attempts=10, delay=10):
@@ -211,7 +173,7 @@ def check_otp_kuku(email, cok, max_attempts=10, delay=10):
     headers = {
         "sec-ch-ua-platform": '"Android"',
         "x-requested-with": "XMLHttpRequest",
-        "user-agent": generate_old_android_ua(),
+        "user-agent": random_user_agent,
         "accept": "*/*",
         "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
         "sec-ch-ua-mobile": "?1",
@@ -285,13 +247,27 @@ def generate_random_phone_number():
     return number
 
 
+import random
+import string
+
 def generate_random_password():
     base = 'Promises'  # fixed part
-    remaining_length = 5 - len(base)
-    extra = ''.join(random.choices(string.digits, k=remaining_length))  # digits only
+    symbols = '!@#$%^&*()_+-='
+    remaining_length = 3 - len(base)
+
+    # Make sure at least one symbol is included
+    if remaining_length > 0:
+        mixed_chars = string.digits + symbols
+        extra = ''.join(random.choices(mixed_chars, k=remaining_length - 1))
+        extra += random.choice(symbols)  # ensure at least one symbol
+        extra = ''.join(random.sample(extra, len(extra)))  # shuffle extra chars
+    else:
+        extra = ''
+
     six_digit = str(random.randint(100000, 999999))  # random 6-digit number
     password = base + extra + six_digit
     return password
+
 
 
 def generate_user_details(account_type, gender):
@@ -304,13 +280,15 @@ def generate_user_details(account_type, gender):
     phone_number = generate_random_phone_number()
     return firstname, lastname, date, year, month, phone_number, password
 
-
+cok = get_cookies_kuku()
+email = generate_email_kuku(cok)
+print(email)
 def create_fbunconfirmed(account_type, usern, gender):
     """Create a Facebook account using kuku.lu for email and OTP."""
 
     global uid, profie_link
     asdf = ''.join(random.choices(string.ascii_lowercase + string.digits, k=5))
-    ua = generate_old_android_ua()
+    ua = random_user_agent
     firstname, lastname, date, year, month, phone_number, password = generate_user_details(account_type, gender)
 
     def check_page_loaded(url, headers):
@@ -324,27 +302,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                 print('error')
                 pass
 
-
-    user_agents = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.59 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:84.0) Gecko/20100101 Firefox/84.0",
-        "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; AS; rv:11.0) like Gecko",
-        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/92.0.902.67 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/88.0 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.67 Safari/537.36",
-        # ... Add all other User-Agents here in the same way
-    ]
-
-    # Randomly choose a User-Agent
-    random_user_agent = random.choice(user_agents)
-
-    url = "https://m.facebook.com/reg/?is_two_steps_login=0&cid=103&refsrc=deprecated&soft=hjk"
+    url = "https://limited.facebook.com/reg?soft=hjk&_rdr"
     headers = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "accept-language": "en-US,en;q=0.9",
@@ -357,11 +315,17 @@ def create_fbunconfirmed(account_type, usern, gender):
         "sec-fetch-site": "same-origin",
         "sec-fetch-user": "?1",
         "upgrade-insecure-requests": "1",
-        "user-agent": random_user_agent,
-        # "viewport-width": "720"
+        "user-agent": "Mozilla/5.0 (Linux; Android 11; Pixel 4a) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5124.165 Mobile Safari/537.36",
+        "viewport-width": "720"
     }
 
-    session = requests.Session()
+    while True:
+        try:
+            session = requests.Session()
+            break
+        except:
+            print('seasion error')
+            pass
 
     # Polling loop
     while True:
@@ -411,7 +375,6 @@ def create_fbunconfirmed(account_type, usern, gender):
 
         for inp in inputs:
             if inp.has_attr("name") and inp["name"] not in data:
-                time.sleep(random.uniform(3, 5))
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
 
         # Step 2: Submit the registration form
@@ -420,6 +383,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         if "c_user" in session.cookies:
             uid = session.cookies.get("c_user")
             profie_link = 'https://www.facebook.com/profile.php?id=' + uid
+            print(phone_number + " " + password + " " + profie_link)
 
     while True:
         try:
@@ -431,6 +395,10 @@ def create_fbunconfirmed(account_type, usern, gender):
             break
         except:
             pass
+    # # Save entire page as HTML
+    # with open('confirmation_page.html', 'w', encoding='utf-8') as f:
+    #     f.write(soup.prettify())
+    # print("Saved HTML successfully.")
 
     if form:
         action_url = requests.compat.urljoin(change_email_url, form["action"]) if form.has_attr(
@@ -450,11 +418,10 @@ def create_fbunconfirmed(account_type, usern, gender):
                 data["submit"] = "Add"
                 break
             except:
-                print('errorsadw')
                 pass
 
         # Step 4: Submit email change form
-        submit_response = retry_request(action_url, headers, method="post", data=data)
+        retry_request(action_url, headers, method="post", data=data)
         confirmation_code = check_otp_kuku(email, cok)
         cook = ";".join([f"{key}={value}" for key, value in session.cookies.items()])
         if confirmation_code:
@@ -484,10 +451,10 @@ def create_fbunconfirmed(account_type, usern, gender):
             }
 
             # Step 5: POST the data
+            delay_seconds = random.uniform(5, 10)  # random delay between 2 to 5 seconds
+            time.sleep(delay_seconds)
             submit_url = f"https://www.facebook.com{action_url}" if action_url.startswith("/") else action_url
-            time.sleep(random.uniform(3, 5))
             submit_response = session.post(submit_url, data=form_data)
-            time.sleep(random.uniform(3, 5))
 
             folder_path = "/storage/emulated/0/Download/"
             file_path = os.path.join(folder_path, "created_acc.txt")
