@@ -415,7 +415,6 @@ def create_fbunconfirmed(account_type, usern, gender):
         if "c_user" in session.cookies:
             uid = session.cookies.get("c_user")
             profie_link = 'https://www.facebook.com/profile.php?id=' + uid
-            print(phone_number + " " + password + " " + profie_link)
 
     while True:
         try:
