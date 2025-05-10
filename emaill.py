@@ -144,38 +144,42 @@ def get_cookies_kuku():
             print(f"{RED}{FAILURE} Error fetching cookies: {e}{RESET}")
 
 def generate_email_kuku(cok):
-    """Generate a random email using kuku.lu."""
-    url = f"{BASE_URL_KUKU}/index.php"
-    em = ''.join(random.choices(string.ascii_lowercase, k=18))
-    #addMailAddrByManual
-    #addMailAddrByAuto
-    sagma = 'boxfi.uk', 'haren.uk'
+    """Keep generating a kuku.lu email until success."""
+    sagma = ['boxfi.uk', 'haren.uk']
     hahi = random.choice(sagma)
-    params = {
-        "action": "addMailAddrByAuto",
-        "nopost": "1",
-        "by_system": "1",
-        "t": str(int(time.time())),
-        "csrf_token_check": cok.get("cookie_csrf_token", ""),
-        # "newdomain": hahi,
-        "newuser": em,
-        "recaptcha_token": "",
-        "_": str(int(time.time() * 1000))
-    }
-    headers = {
-        "sec-ch-ua-platform": '"Android"',
-        "x-requested-with": "XMLHttpRequest",
-        "user-agent": generate_old_android_ua(),
-        "accept": "*/*",
-        "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
-        "sec-ch-ua-mobile": "?1",
-        "sec-fetch-site": "same-origin",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-dest": "empty",
-        "accept-encoding": "gzip, deflate",
-        "accept-language": "en-US,en;q=0.9",
-        "priority": "u=1, i"
-    }
+    while True:
+        try:
+            url = "https://m.kuku.lu/index.php"
+            em = ''.join(random.choices(string.ascii_lowercase, k=18))
+
+            timestamp = str(int(time.time()))
+            params = {
+                "action": "addMailAddrByAuto",
+                "user-agent": "Mozilla/5.0 (Linux; Android 11; Pixel 4a) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5124.165 Mobile Safari/537.36",
+                "nopost": "1",
+                "newdomain": hahi,
+                "by_system": "1",
+                "t": timestamp,
+                "csrf_token_check": cok.get("cookie_csrf_token", ""),
+                "newuser": em,
+                "recaptcha_token": "",
+                "_": str(int(time.time() * 1000))
+            }
+
+            headers = {
+                "sec-ch-ua-platform": '"Android"',
+                "x-requested-with": "XMLHttpRequest",
+                "user-agent": random_user_agent,
+                "accept": "*/*",
+                "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
+                "sec-ch-ua-mobile": "?1",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-dest": "empty",
+                "accept-encoding": "gzip, deflate",
+                "accept-language": "en-US,en;q=0.9",
+                "priority": "u=1, i"
+            }
 
     try:
         while True:
