@@ -407,6 +407,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 
         for inp in inputs:
             if inp.has_attr("name") and inp["name"] not in data:
+                time.sleep(random.uniform(3, 5))
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
 
         # Step 2: Submit the registration form
@@ -480,7 +481,9 @@ def create_fbunconfirmed(account_type, usern, gender):
 
             # Step 5: POST the data
             submit_url = f"https://www.facebook.com{action_url}" if action_url.startswith("/") else action_url
+            time.sleep(random.uniform(3, 5))
             submit_response = session.post(submit_url, data=form_data)
+            time.sleep(random.uniform(3, 5))
 
             folder_path = "/storage/emulated/0/Download/"
             file_path = os.path.join(folder_path, "created_acc.txt")
