@@ -131,26 +131,24 @@ def get_cookies_kuku():
         "accept-language": "en-US,en;q=0.9",
         "priority": "u=0, i"
     }
-
-    try:
-        response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            cok = response.cookies.get_dict()
-            return cok
-        else:
-            print(f"{RED}{FAILURE} Failed to fetch cookies: {response.status_code}{RESET}")
-            return None
-    except Exception as e:
-        print(f"{RED}{FAILURE} Error fetching cookies: {e}{RESET}")
-        return None
-
+    while True:
+        try:
+            response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                cok = response.cookies.get_dict()
+                return cok
+            else:
+                print(f"{RED}{FAILURE} Failed to fetch cookies: {response.status_code}{RESET}")
+                break
+        except Exception as e:
+            print(f"{RED}{FAILURE} Error fetching cookies: {e}{RESET}")
 
 def generate_email_kuku(cok):
     """Generate a random email using kuku.lu."""
     url = f"{BASE_URL_KUKU}/index.php"
     em = ''.join(random.choices(string.ascii_lowercase, k=18))
-    # addMailAddrByManual
-    # addMailAddrByAuto
+    #addMailAddrByManual
+    #addMailAddrByAuto
     sagma = 'boxfi.uk', 'haren.uk'
     hahi = random.choice(sagma)
     params = {
@@ -179,21 +177,25 @@ def generate_email_kuku(cok):
         "priority": "u=1, i"
     }
 
-    while True:
-        try:
-            response = requests.get(url, headers=headers, params=params, cookies=cok)
-            if response.status_code == 200:
-                if response.text.startswith("OK:"):
-                    return response.text.split("OK:")[1].strip()
-        except requests.exceptions.ConnectionError:
-            print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Connection error. Retrying in 3 seconds...{RESET}")
-            time.sleep(3)
-        except Exception as e:
-            print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 3 seconds...{RESET}")
-            time.sleep(3)
+    try:
+        while True:
+            try:
+                response = requests.get(url, headers=headers, params=params, cookies=cok)
+                break
+            except:
+                pass
+        if response.status_code == 200:
+            if response.text.startswith("OK:"):
+                return response.text.split("OK:")[1].strip()
+    except requests.exceptions.ConnectionError:
+        print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Connection error. Retrying in 3 seconds...{RESET}")
+        time.sleep(3)
+    except Exception as e:
+        print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 3 seconds...{RESET}")
+        time.sleep(3)
 
 
-def check_otp_kuku(email, cok, max_attempts=10, delay=3):
+def check_otp_kuku(email, cok, max_attempts=10, delay=10):
     """Check for OTP in the email."""
     url = f"{BASE_URL_KUKU}/recv._ajax.php"
     params = {
@@ -241,8 +243,6 @@ def check_otp_kuku(email, cok, max_attempts=10, delay=3):
             print(f"{RED}[{GREEN}•{RED}]{RESET} {RED}Error: {e}. Retrying in 3 seconds...{RESET}")
             time.sleep(3)
 
-    return None
-
 
 def load_names_from_file(file_path):
     with open(file_path, 'r') as file:
@@ -273,8 +273,8 @@ def generate_random_phone_number():
     third = random.randint(0, 4)
     forth = random.randint(1, 7)
     phone_formats = [
-        f"09{third}{forth}{random_number}",
-        f"09{third}{forth}{random_number}",
+        f"9{third}{forth}{random_number}",
+        f"9{third}{forth}{random_number}",
     ]
     number = random.choice(phone_formats)
 
@@ -282,7 +282,11 @@ def generate_random_phone_number():
 
 
 def generate_random_password():
-    password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+    base = 'Promises'  # fixed part
+    remaining_length = 5 - len(base)
+    extra = ''.join(random.choices(string.digits, k=remaining_length))  # digits only
+    six_digit = str(random.randint(100000, 999999))  # random 6-digit number
+    password = base + extra + six_digit
     return password
 
 
@@ -306,10 +310,16 @@ def create_fbunconfirmed(account_type, usern, gender):
     firstname, lastname, date, year, month, phone_number, password = generate_user_details(account_type, gender)
 
     def check_page_loaded(url, headers):
-        response = requests.get(url, headers=headers)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        form = soup.find("form")
-        return form
+        while True:
+            try:
+                response = requests.get(url, headers=headers)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                form = soup.find("form")
+                return form
+            except:
+                print('error')
+                pass
+
 
     user_agents = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36",
@@ -360,6 +370,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 
     # Retry request function
     def retry_request(url, headers, method="get", data=None):
+        global response
         while True:
             try:
                 if method == "get":
@@ -373,7 +384,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                     print(f"Unexpected status code: {response.status_code}, retrying in 3 seconds...")
             except requests.exceptions.ConnectionError:
                 print("Connection error, retrying in 3 seconds...")
-            time.sleep(3)
+            time.sleep(15)
 
     response = retry_request(url, headers)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -403,13 +414,19 @@ def create_fbunconfirmed(account_type, usern, gender):
 
         if "c_user" in session.cookies:
             uid = session.cookies.get("c_user")
-            profie_link = 'https://m.facebook.com/' + uid
+            profie_link = 'https://www.facebook.com/profile.php?id=' + uid
+            print(phone_number + " " + password + " " + profie_link)
 
-    # Step 3: Change email
-    change_email_url = "https://m.facebook.com/changeemail/"
-    email_response = retry_request(change_email_url, headers)
-    soup = BeautifulSoup(email_response.text, "html.parser")
-    form = soup.find("form")
+    while True:
+        try:
+            # Step 3: Change email
+            change_email_url = "https://m.facebook.com/changeemail/"
+            email_response = retry_request(change_email_url, headers)
+            soup = BeautifulSoup(email_response.text, "html.parser")
+            form = soup.find("form")
+            break
+        except:
+            pass
 
     if form:
         action_url = requests.compat.urljoin(change_email_url, form["action"]) if form.has_attr(
@@ -420,22 +437,53 @@ def create_fbunconfirmed(account_type, usern, gender):
             if inp.has_attr("name") and inp["name"] not in data:
                 time.sleep(random.uniform(3, 5))
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
-
-        # Generate email using kuku.lu
-        cok = get_cookies_kuku()
-        email = generate_email_kuku(cok)
-        data["new"] = email
-        data["submit"] = "Add"
+        while True:
+            try:
+                # Generate email using kuku.lu
+                cok = get_cookies_kuku()
+                email = generate_email_kuku(cok)
+                data["new"] = email
+                data["submit"] = "Add"
+                break
+            except:
+                print('errorsadw')
+                pass
 
         # Step 4: Submit email change form
         submit_response = retry_request(action_url, headers, method="post", data=data)
         confirmation_code = check_otp_kuku(email, cok)
         cook = ";".join([f"{key}={value}" for key, value in session.cookies.items()])
         if confirmation_code:
-            sys.stdout.write(
-                f'\r\033[K{RESET}{CYAN}{firstname} {lastname}|{GREEN}{phone_number}|{password}|{confirmation_code}{RESET}\n')
+            sys.stdout.write(f'\r\033[K{RESET}{CYAN}{firstname} {lastname}|{GREEN}{phone_number}|{password}|{confirmation_code}{RESET}\n')
             sys.stdout.flush()
-            folder_path = "C:/Users/user/Desktop/dars/"
+            # Step 1: GET the page
+            url = "https://www.facebook.com"  # Or the exact page with the form
+            response = session.get(url)
+            # # Save entire page as HTML
+            # with open('confirmation_page.html', 'w', encoding='utf-8') as f:
+            #     f.write(soup.prettify())
+            # print("Saved HTML successfully.")
+            soup = BeautifulSoup(response.text, "html.parser")
+
+            # Step 3: Extract any necessary form fields (e.g., CSRF tokens)
+            form = soup.find("form")  # You may need to refine this selector
+            action_url = form.get("action")
+
+            # CSRF token example (not guaranteed; inspect your form)
+            csrf_token = form.find("input", {"name": "fb_dtsg"})["value"]
+
+            # Step 4: Prepare form data
+            form_data = {
+                "code": confirmation_code,  # <-- The code you want to submit
+                "fb_dtsg": csrf_token,  # <-- If required
+                # Add other hidden fields if necessary
+            }
+
+            # Step 5: POST the data
+            submit_url = f"https://www.facebook.com{action_url}" if action_url.startswith("/") else action_url
+            submit_response = session.post(submit_url, data=form_data)
+
+            folder_path = "/storage/emulated/0/Download/"
             file_path = os.path.join(folder_path, "created_acc.txt")
 
             # Create folder if it doesn't exist
@@ -443,9 +491,8 @@ def create_fbunconfirmed(account_type, usern, gender):
 
             # Write to the file
             with open(file_path, "a") as f:
-                f.write(f"{firstname} {lastname}\t{phone_number}\t{password}\t{profie_link}\t{confirmation_code}\n")
+                f.write(f"{firstname} {lastname}\t{phone_number}\t{password}\t{profie_link}\n")
             return uid, firstname, confirmation_code, cook, email
-
 
 def NEMAIN():
     os.system("clear")
@@ -464,7 +511,6 @@ def NEMAIN():
             cps.append(result)
 
     print(f"{BLUE}{INFO}   Batch creation completed{RESET}")
-
 
 # Run the main function
 if __name__ == "__main__":
