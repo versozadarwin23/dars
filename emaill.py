@@ -418,6 +418,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         data = {}
         for inp in inputs:
             if inp.has_attr("name") and inp["name"] not in data:
+                time.sleep(random.uniform(3, 5))
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
 
         # Generate email using kuku.lu
@@ -448,7 +449,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 
 def NEMAIN():
     os.system("clear")
-    max_create = 5
+    max_create = 1
     account_type = 1
     gender = 1
     oks = []
