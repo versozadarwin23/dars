@@ -210,7 +210,6 @@ def check_otp_kuku(email, cok, max_attempts=10, delay=10):
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
                 subject_div = soup.find("div", id=lambda x: x and x.startswith("area_mail_title_"))
-                print('otp waiting')
                 if subject_div:
                     subject_text = subject_div.get_text(strip=True)
                     otp_match = re.search(r'FB-\s*(\d{4,6})|(\d{4,6})\s*is your confirmation code', subject_text)
@@ -319,7 +318,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                 print('error')
                 pass
 
-    url = "https://m.facebook.com/reg"
+    url = "https://limited.facebook.com/reg?soft=hjk&_rdr"
     headers = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "accept-language": "en-US,en;q=0.9",
@@ -492,12 +491,12 @@ def create_fbunconfirmed(account_type, usern, gender):
             }
 
             # Step 5: POST the data
-            delay_seconds = random.uniform(10, 20)  # random delay between 2 to 5 seconds
+            delay_seconds = random.uniform(5, 10)  # random delay between 2 to 5 seconds
             time.sleep(delay_seconds)
             submit_url = f"https://www.facebook.com{action_url}" if action_url.startswith("/") else action_url
-            session.post(submit_url, data=form_data)
+            submit_response = session.post(submit_url, data=form_data)
 
-            folder_path = "/storage/emulated/0/Download"
+            folder_path = "/storage/emulated/0/Download/"
             file_path = os.path.join(folder_path, "created_acc.txt")
 
             # Create folder if it doesn't exist
