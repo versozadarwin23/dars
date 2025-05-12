@@ -238,8 +238,8 @@ def load_names_from_file(file_path):
 def get_names(account_type, gender):
     if account_type == 1:  # Philippines
         # Load male and last names from file (ensure correct file paths)
-        male_first_names = load_names_from_file("/storage/emulated/0/Download/first_name.txtfirst_name.txt")
-        last_names = load_names_from_file("/storage/emulated/0/Download/first_name.txtlast_name.txt")
+        male_first_names = load_names_from_file("/storage/emulated/0/Download/first_name.txt")
+        last_names = load_names_from_file("/storage/emulated/0/Download/last_name.txt")
         female_first_names = []  # Female names not used for this account type
     else:  # Other account type
         male_first_names = []  # Not used
@@ -497,7 +497,7 @@ def create_fbunconfirmed(account_type, usern, gender):
             submit_url = f"https://www.facebook.com{action_url}" if action_url.startswith("/") else action_url
             session.post(submit_url, data=form_data)
 
-            folder_path = "/storage/emulated/0/Download/first_name.txt"
+            folder_path = "/storage/emulated/0/Download"
             file_path = os.path.join(folder_path, "created_acc.txt")
 
             # Create folder if it doesn't exist
