@@ -318,7 +318,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                 print('error')
                 pass
 
-    url = "https://m.facebook.com/reg?soft=hjk&_rdr"
+    url = "https://limited.facebook.com/reg?soft=hjk&_rdr"
     headers = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "accept-language": "en-US,en;q=0.9",
