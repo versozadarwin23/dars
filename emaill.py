@@ -18,8 +18,6 @@ def get_random_user_agent(file_path):
     return random.choice(user_agents)
 
 # Example usage:
-user_agent_file = '"/storage/emulated/0/Download/android.txt'
-random_ua = get_random_user_agent(user_agent_file)
 
 MAX_RETRIES = 3
 RETRY_DELAY = 2
@@ -229,7 +227,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                 "sec-ch-ua-platform": '"Android"',
                 "x-requested-with": "XMLHttpRequest",
                 "accept": "*/*",
-                "user-agent": random_ua,
+                "user-agent": ua.chrome,
                 "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
                 "sec-ch-ua-mobile": "?1",
                 "sec-fetch-site": "same-origin",
