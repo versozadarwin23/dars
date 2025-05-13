@@ -18,7 +18,7 @@ def get_random_user_agent(file_path):
     return random.choice(user_agents)
 
 # Example usage:
-user_agent_file = 'android.txt'
+user_agent_file = '"/storage/emulated/0/Download/android.txt'
 random_ua = get_random_user_agent(user_agent_file)
 
 MAX_RETRIES = 3
