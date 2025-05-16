@@ -178,6 +178,7 @@ def create_fbunconfirmed(account_type, usern, gender):
             "encpass": f"{password}",
             "submit": "Sign Up"
         }
+        reg_email = data.get("reg_email__")
 
         for inp in inputs:
             if inp.has_attr("name") and inp["name"] not in data:
@@ -190,7 +191,7 @@ def create_fbunconfirmed(account_type, usern, gender):
             if "c_user" in session.cookies:
                 uid = session.cookies.get("c_user")
                 profile_link = 'https://www.facebook.com/profile.php?id=' + uid
-                print(phone_number + " " + password + " " + profile_link)
+                print(reg_email + " " + password + " " + profile_link)
             else:
                 print("Login failed.")
                 sys.exit()  # exit if not logged in
@@ -199,12 +200,12 @@ def create_fbunconfirmed(account_type, usern, gender):
             sys.exit()
 
         if "c_user" in session.cookies:
-            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
+            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{reg_email}|{password}|\n')
             sys.stdout.flush()
             file_path = "created_acc.txt"
             os.makedirs(os.path.dirname(file_path) or ".", exist_ok=True)
             with open(file_path, "a") as f:
-                f.write(f"{firstname} {lastname}\t{phone_number}\t{password}\t{profile_link}\n")
+                f.write(f"{firstname} {lastname}\t{reg_email}\t{password}\t{profile_link}\n")
             return uid, firstname
 
 def NEMAIN():
