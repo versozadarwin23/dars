@@ -187,17 +187,12 @@ def create_fbunconfirmed(account_type, usern, gender):
 
         # Step 2: Submit the registration form
         submit_response = retry_request(action_url, headers, method="post", data=data)
-        try:
-            if "c_user" in session.cookies:
-                uid = session.cookies.get("c_user")
-                profile_link = 'https://www.facebook.com/profile.php?id=' + uid
-                print(reg_email + " " + password + " " + profile_link)
-            else:
-                print("Login failed.")
-                sys.exit()  # exit if not logged in
-        except Exception as e:
-            print("An error occurred:", str(e))
-            sys.exit()
+        if "c_user" in session.cookies:
+            uid = session.cookies.get("c_user")
+            profile_link = 'https://www.facebook.com/profile.php?id=' + uid
+            print(reg_email + " " + password + " " + profile_link)
+        else:
+            return None  # Will cause retry in NEMAIN()
 
         if "c_user" in session.cookies:
             sys.stdout.write(f'\r\033[K{firstname} {lastname}|{reg_email}|{password}|\n')
@@ -217,12 +212,14 @@ def NEMAIN():
     cps = []
     for i in range(max_create):
         usern = "ali"  # Replace with actual username logic
-        result = create_fbunconfirmed(account_type, usern, gender)
-
-        if result:
-            oks.append(result)
-        else:
-            cps.append(result)
+        while True:
+            result = create_fbunconfirmed(account_type, usern, gender)
+            if result:
+                oks.append(result)
+                break
+            else:
+                print(f"{WARNING} Retry creating account...")
+                time.sleep(3)
 
     print(f"{INFO}   Batch creation completed")
 
