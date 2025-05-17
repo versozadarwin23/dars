@@ -72,7 +72,7 @@ import string
 
 def generate_random_password():
     base = 'Promises'  # fixed part
-    symbols = '!@#$%^&*()_+-='
+    symbols = '!@#_'
     remaining_length = 3 - len(base)
 
     # Make sure at least one symbol is included
@@ -109,19 +109,19 @@ def create_fbunconfirmed(account_type, usern, gender):
 
     url = "https://m.facebook.com/reg"
     headers = {
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "accept-language": "en-US,en;q=0.9",
-        "cache-control": "max-age=0",
-        "dpr": "1",
-        "priority": "u=0, i",
-        "sec-ch-prefers-color-scheme": "dark",
-        "sec-fetch-dest": "document",
-        "sec-fetch-mode": "navigate",
-        "sec-fetch-site": "same-origin",
-        "sec-fetch-user": "?1",
-        "upgrade-insecure-requests": "1",
+        # "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        # "accept-language": "en-US,en;q=0.9",
+        # "cache-control": "max-age=0",
+        # "dpr": "1",
+        # "priority": "u=0, i",
+        # "sec-ch-prefers-color-scheme": "dark",
+        # "sec-fetch-dest": "document",
+        # "sec-fetch-mode": "navigate",
+        # "sec-fetch-site": "same-origin",
+        # "sec-fetch-user": "?1",
+        # "upgrade-insecure-requests": "1",
         "user-agent": 'Mozilla/5.0 (Linux; Android 4.4.4; G7-L01 Build/HuaweiG7-L01) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36 [FB_IAB/MESSENGER;FBAV/121.0.0.15.70;]',
-        "viewport-width": "720"
+        # "viewport-width": "720"
     }
 
     while True:
@@ -131,12 +131,6 @@ def create_fbunconfirmed(account_type, usern, gender):
         except:
             print('seasion error')
             pass
-
-    # # Save entire page as HTML
-    # with open('confirmation_page.html', 'w', encoding='utf-8') as f:
-    #     f.write(soup.prettify())
-    # print("Saved HTML successfully.")
-    # Polling loop
 
     # Retry request function
     def retry_request(url, headers, method="get", data=None):
@@ -225,4 +219,6 @@ def NEMAIN():
 
 # Run the main function
 if __name__ == "__main__":
-    NEMAIN()
+    while True:
+        NEMAIN()
+        time.sleep(3)
