@@ -70,23 +70,40 @@ def generate_random_phone_number():
 import random
 import string
 
-def generate_random_password():
-    base = 'Promises'  # fixed part
-    symbols = '!@#_'
-    remaining_length = 3 - len(base)
+import random
+import string
 
-    # Make sure at least one symbol is included
+def generate_random_password(base='', length=12):
+    symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?'
+
+    if len(base) > length - 7:
+        raise ValueError("Base too long for desired password length.")
+
+    # Start building from the base
+    remaining_length = length - len(base) - 6  # reserve 6 for digits
+
+    # Characters to fill the rest (ensure at least one symbol)
     if remaining_length > 0:
-        mixed_chars = string.digits + symbols
-        extra = ''.join(random.choices(mixed_chars, k=remaining_length - 1))
-        extra += random.choice(symbols)  # ensure at least one symbol
-        extra = ''.join(random.sample(extra, len(extra)))  # shuffle extra chars
+        chars = string.ascii_letters + string.digits + symbols
+        extra = random.choices(string.ascii_letters + string.digits, k=remaining_length - 1)
+        extra.append(random.choice(symbols))  # guarantee at least one symbol
+        random.shuffle(extra)
+        extra_str = ''.join(extra)
     else:
-        extra = ''
+        extra_str = ''
 
-    six_digit = str(random.randint(100000, 999999))  # random 6-digit number
-    password = base + extra + six_digit + symbols
-    return password
+    # 6-digit number
+    six_digit = ''.join(random.choices(string.digits, k=6))
+
+    # Final password before shuffle
+    password_chars = list(base + extra_str + six_digit)
+    random.shuffle(password_chars)
+
+    return ''.join(password_chars)
+
+# Example usage
+print(generate_random_password(base='MyBase', length=16))
+
 
 
 
@@ -109,19 +126,19 @@ def create_fbunconfirmed(account_type, usern, gender):
 
     url = "https://limited.facebook.com/reg"
     headers = {
-        # "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        # "accept-language": "en-US,en;q=0.9",
-        # "cache-control": "max-age=0",
-        # "dpr": "1",
-        # "priority": "u=0, i",
-        # "sec-ch-prefers-color-scheme": "dark",
-        # "sec-fetch-dest": "document",
-        # "sec-fetch-mode": "navigate",
-        # "sec-fetch-site": "same-origin",
-        # "sec-fetch-user": "?1",
-        # "upgrade-insecure-requests": "1",
-        "user-agent": 'Mozilla/5.0 (Linux; Android 4.4.4; G7-L01 Build/HuaweiG7-L01) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36 [FB_IAB/MESSENGER;FBAV/121.0.0.15.70;]',
-        # "viewport-width": "720"
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "Accept-Language": "en-US,en;q=0.9",
+        "cache-control": "max-age=0",
+        "dpr": "1",
+        "priority": "u=0, i",
+        "sec-ch-prefers-color-scheme": "dark",
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
+        "user-agent": ua['Chrome'],
+        "viewport-width": "720"
     }
 
     while True:
