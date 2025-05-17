@@ -47,7 +47,7 @@ def get_names(account_type, gender):
         last_names = load_names_from_file('path_to_last_names.txt')
 
     # Select first name based on gender
-    firstname = random.choice(male_first_names if gender == 1 else female_first_names)
+    firstname = random.choice(male_first_names if gender == 2 else female_first_names)
     lastname = random.choice(last_names)
 
     return firstname, lastname
@@ -107,7 +107,7 @@ def create_fbunconfirmed(account_type, usern, gender):
     global uid, profie_link, profile_link
     firstname, lastname, date, year, month, phone_number, password = generate_user_details(account_type, gender)
 
-    url = "https://m.facebook.com/reg"
+    url = "https://limited.facebook.com/reg"
     headers = {
         # "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         # "accept-language": "en-US,en;q=0.9",
@@ -190,6 +190,10 @@ def create_fbunconfirmed(account_type, usern, gender):
 
         if "c_user" in session.cookies:
             sys.stdout.write(f'\r\033[K{firstname} {lastname}|{reg_email}|{password}|\n')
+            # Save entire page as HTML
+            with open('confirmation_page.html', 'w', encoding='utf-8') as f:
+                f.write(soup.prettify())
+            print("Saved HTML successfully.")
             sys.stdout.flush()
             file_path = "created_acc.txt"
             os.makedirs(os.path.dirname(file_path) or ".", exist_ok=True)
@@ -201,7 +205,7 @@ def NEMAIN():
     os.system("clear")
     max_create = 1
     account_type = 1
-    gender = 1
+    gender = 2
     oks = []
     cps = []
     for i in range(max_create):
@@ -219,6 +223,4 @@ def NEMAIN():
 
 # Run the main function
 if __name__ == "__main__":
-    while True:
-        NEMAIN()
-        time.sleep(3)
+    NEMAIN()
