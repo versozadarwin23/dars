@@ -47,7 +47,7 @@ def get_names(account_type, gender):
         last_names = load_names_from_file('path_to_last_names.txt')
 
     # Select first name based on gender
-    firstname = random.choice(male_first_names if gender == 2 else female_first_names)
+    firstname = random.choice(male_first_names if gender == 1 else female_first_names)
     lastname = random.choice(last_names)
 
     return firstname, lastname
@@ -70,40 +70,23 @@ def generate_random_phone_number():
 import random
 import string
 
-import random
-import string
+def generate_random_password():
+    base = 'Promises'  # fixed part
+    symbols = '!@#$%^&*()_+-='
+    remaining_length = 3 - len(base)
 
-def generate_random_password(base='', length=12):
-    symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?'
-
-    if len(base) > length - 7:
-        raise ValueError("Base too long for desired password length.")
-
-    # Start building from the base
-    remaining_length = length - len(base) - 6  # reserve 6 for digits
-
-    # Characters to fill the rest (ensure at least one symbol)
+    # Make sure at least one symbol is included
     if remaining_length > 0:
-        chars = string.ascii_letters + string.digits + symbols
-        extra = random.choices(string.ascii_letters + string.digits, k=remaining_length - 1)
-        extra.append(random.choice(symbols))  # guarantee at least one symbol
-        random.shuffle(extra)
-        extra_str = ''.join(extra)
+        mixed_chars = string.digits + symbols
+        extra = ''.join(random.choices(mixed_chars, k=remaining_length - 1))
+        extra += random.choice(symbols)  # ensure at least one symbol
+        extra = ''.join(random.sample(extra, len(extra)))  # shuffle extra chars
     else:
-        extra_str = ''
+        extra = ''
 
-    # 6-digit number
-    six_digit = ''.join(random.choices(string.digits, k=6))
-
-    # Final password before shuffle
-    password_chars = list(base + extra_str + six_digit)
-    random.shuffle(password_chars)
-
-    return ''.join(password_chars)
-
-# Example usage
-print(generate_random_password(base='MyBase', length=16))
-
+    six_digit = str(random.randint(100000, 999999))  # random 6-digit number
+    password = base + extra + six_digit + symbols
+    return password
 
 
 
@@ -122,12 +105,24 @@ def create_fbunconfirmed(account_type, usern, gender):
     """Create a Facebook account using kuku.lu for email and OTP."""
 
     global uid, profie_link, profile_link
+    asdf = ''.join(random.choices(string.ascii_lowercase + string.digits, k=5))
     firstname, lastname, date, year, month, phone_number, password = generate_user_details(account_type, gender)
 
-    url = "https://limited.facebook.com/reg"
+    def check_page_loaded(url, headers):
+        while True:
+            try:
+                response = requests.get(url, headers=headers)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                form = soup.find("form")
+                return form
+            except:
+                print('error')
+                pass
+
+    url = "https://limited.facebook.com/reg?soft=hjk&_rdr"
     headers = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "Accept-Language": "en-US,en;q=0.9",
+        "accept-language": "en-US,en;q=0.9",
         "cache-control": "max-age=0",
         "dpr": "1",
         "priority": "u=0, i",
@@ -137,7 +132,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         "sec-fetch-site": "same-origin",
         "sec-fetch-user": "?1",
         "upgrade-insecure-requests": "1",
-        "user-agent": ua['Chrome'],
+        "user-agent": ua.chrome,
         "viewport-width": "720"
     }
 
@@ -148,6 +143,19 @@ def create_fbunconfirmed(account_type, usern, gender):
         except:
             print('seasion error')
             pass
+
+    # # Save entire page as HTML
+    # with open('confirmation_page.html', 'w', encoding='utf-8') as f:
+    #     f.write(soup.prettify())
+    # print("Saved HTML successfully.")
+    # Polling loop
+    while True:
+        form = check_page_loaded(url, headers)
+        if form:
+            break  # Exit loop if form is found
+        else:
+            print("Waiting for form to load...")
+            time.sleep(3)  # Wait for 3 seconds before checking again
 
     # Retry request function
     def retry_request(url, headers, method="get", data=None):
@@ -184,12 +192,12 @@ def create_fbunconfirmed(account_type, usern, gender):
             "birthday_day": f"{date}",
             "birthday_month": f"{month}",
             "birthday_year": f"{year}",
-            "reg_email__": input("Please enter your email: ").strip(),
+            "reg_email__": input(f"Please enter your email {firstname} {lastname}:").strip(),
             "sex": f"{gender}",
             "encpass": f"{password}",
             "submit": "Sign Up"
         }
-        reg_email = data.get("reg_email__")
+        email = data.get("reg_email__")
 
         for inp in inputs:
             if inp.has_attr("name") and inp["name"] not in data:
@@ -198,43 +206,127 @@ def create_fbunconfirmed(account_type, usern, gender):
 
         # Step 2: Submit the registration form
         submit_response = retry_request(action_url, headers, method="post", data=data)
-        if "c_user" in session.cookies:
-            uid = session.cookies.get("c_user")
-            profile_link = 'https://www.facebook.com/profile.php?id=' + uid
-            print(reg_email + " " + password + " " + profile_link)
-        else:
-            return None  # Will cause retry in NEMAIN()
+        try:
+            if "c_user" in session.cookies:
+                uid = session.cookies.get("c_user")
+                profile_link = 'https://www.facebook.com/profile.php?id=' + uid
+                print(email + " " + password + " " + profile_link)
+            else:
+                print("Login failed.")
+                sys.exit()  # exit if not logged in
+        except Exception as e:
+            print("An error occurred:", str(e))
+            sys.exit()
 
+
+
+    while True:
+        try:
+            # Step 3: Change email
+            change_email_url = "https://m.facebook.com/changeemail/"
+            headerssss = {
+                "sec-ch-ua-platform": '"Android"',
+                "x-requested-with": "XMLHttpRequest",
+                "accept": "*/*",
+                "user-agent": ua.chrome,
+                "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
+                "sec-ch-ua-mobile": "?1",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-dest": "empty",
+                "accept-encoding": "gzip, deflate,",
+                "accept-language": "en-US,en;q=0.9",
+                "priority": "u=1, i"
+            }
+            email_response = retry_request(change_email_url, headerssss)
+            soup = BeautifulSoup(email_response.text, "html.parser")
+            form = soup.find("form")
+            break
+        except:
+            pass
+
+    if form:
+        action_url = requests.compat.urljoin(change_email_url, form["action"]) if form.has_attr(
+            "action") else change_email_url
+        inputs = form.find_all("input")
+        data = {}
+        for inp in inputs:
+            if inp.has_attr("name") and inp["name"] not in data:
+                time.sleep(random.uniform(3, 5))
+                data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
+        while True:
+            try:
+                emailsss = input("Please enter your email: ")
+                data["new"] = emailsss
+                data["submit"] = "Add"
+                break
+            except:
+                pass
+
+        # Step 4: Submit email change form
+        retry_request(action_url, headers, method="post", data=data)
         if "c_user" in session.cookies:
-            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{reg_email}|{password}|\n')
-            # Save entire page as HTML
-            with open('confirmation_page.html', 'w', encoding='utf-8') as f:
-                f.write(soup.prettify())
-            print("Saved HTML successfully.")
+            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
             sys.stdout.flush()
-            file_path = "created_acc.txt"
-            os.makedirs(os.path.dirname(file_path) or ".", exist_ok=True)
+            headerssss = {
+                "sec-ch-ua-platform": '"Android"',
+                "x-requested-with": "XMLHttpRequest",
+                "accept": "*/*",
+                "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+                "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
+                "sec-ch-ua-mobile": "?1",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-dest": "empty",
+                "accept-encoding": "gzip, deflate,",
+                "accept-language": "en-US,en;q=0.9",
+                "priority": "u=1, i"
+            }
+            url = "https://www.facebook.com"
+            fewsa = session.get(url, headers=headerssss)
+            soup = BeautifulSoup(fewsa.text, "html.parser")
+            form = soup.find("form")
+            # with open('confirmation_page.html', 'w', encoding='utf-8') as f:
+            #     f.write(soup.prettify())
+            # print("Saved HTML successfully.")
+            action_url = form.get("action")
+            csrf_token = form.find("input", {"name": "fb_dtsg"})["value"]
+            codesss = input("Please enter your code: ")
+            form_data = {
+                "code": codesss,
+                "fb_dtsg": csrf_token,
+            }
+
+            delay_seconds = random.uniform(3, 5)
+            time.sleep(delay_seconds)
+            submit_url = f"https://www.facebook.com{action_url}" if action_url.startswith("/") else action_url
+            session.post(submit_url, data=form_data)
+
+            folder = "."
+            file_path = os.path.join(folder, "created_acc.txt")
+            os.makedirs(folder, exist_ok=True)
+
+            # Write to the file
             with open(file_path, "a") as f:
-                f.write(f"{firstname} {lastname}\t{reg_email}\t{password}\t{profile_link}\n")
+                f.write(f"{firstname} {lastname}\t{phone_number}\t{password}\t{profile_link}\n")
+
             return uid, firstname
 
 def NEMAIN():
     os.system("clear")
     max_create = 1
     account_type = 1
-    gender = 2
+    gender = 1
     oks = []
     cps = []
     for i in range(max_create):
         usern = "ali"  # Replace with actual username logic
-        while True:
-            result = create_fbunconfirmed(account_type, usern, gender)
-            if result:
-                oks.append(result)
-                break
-            else:
-                print(f"{WARNING} Retry creating account...")
-                time.sleep(3)
+        result = create_fbunconfirmed(account_type, usern, gender)
+
+        if result:
+            oks.append(result)
+        else:
+            cps.append(result)
 
     print(f"{INFO}   Batch creation completed")
 
