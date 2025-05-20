@@ -1,23 +1,16 @@
 import os
+import uuid
 
 import requests
 from bs4 import BeautifulSoup
 import time
 import sys
 import random
-from fake_useragent import UserAgent
-ua = UserAgent()
 
 def load_user_agents(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         user_agents = [line.strip() for line in file if line.strip()]
     return user_agents
-
-def get_random_user_agent(file_path):
-    user_agents = load_user_agents(file_path)
-    return random.choice(user_agents)
-
-# Example usage:
 
 MAX_RETRIES = 3
 RETRY_DELAY = 2
@@ -119,21 +112,24 @@ def create_fbunconfirmed(account_type, usern, gender):
                 print('error')
                 pass
 
-    url = "https://limited.facebook.com/reg?soft=hjk&_rdr"
+    url = "https://m.facebook.com/reg?soft=hjk&_rdr"
     headers = {
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "accept-language": "en-US,en;q=0.9",
-        "cache-control": "max-age=0",
-        "dpr": "1",
-        "priority": "u=0, i",
-        "sec-ch-prefers-color-scheme": "dark",
-        "sec-fetch-dest": "document",
-        "sec-fetch-mode": "navigate",
-        "sec-fetch-site": "same-origin",
-        "sec-fetch-user": "?1",
-        "upgrade-insecure-requests": "1",
-        "user-agent": ua.chrome,
-        "viewport-width": "720"
+        'authorization': 'OAuth 350685531728|62f8ce9f74b12f84c123cc23437a4a32',
+        'x-fb-friendly-name': 'Authenticate',
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Referer": "https://m.facebook.com/",
+        "Connection": "keep-alive",
+        "X-FB-Connection-Type": "MOBILE.LTE",
+        "X-FB-Connection-Quality": "EXCELLENT",
+        "X-FB-Net-HNI": "51502",  # Smart PH
+        "X-FB-SIM-HNI": "51502",
+        "X-FB-HTTP-Engine": "Liger",
+        'x-fb-connection-type': 'Unknown',
+        'accept-encoding': 'gzip, deflate',
+        'content-type': 'application/x-www-form-urlencoded',
+        'x-fb-http-engine': 'Liger',
+        # 'User-Agent': 'Mozilla/5.0 (Linux; Android 8.1.0; CPH1903 Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/136.0.7103.60 Mobile Safari/537.36[FBAN/EMA;FBLC/pt_PT;FBAV/444.2.0.9.110;FBCX/modulariab;]'
     }
 
     while True:
@@ -144,11 +140,6 @@ def create_fbunconfirmed(account_type, usern, gender):
             print('seasion error')
             pass
 
-    # # Save entire page as HTML
-    # with open('confirmation_page.html', 'w', encoding='utf-8') as f:
-    #     f.write(soup.prettify())
-    # print("Saved HTML successfully.")
-    # Polling loop
     while True:
         form = check_page_loaded(url, headers)
         if form:
@@ -178,10 +169,6 @@ def create_fbunconfirmed(account_type, usern, gender):
     response = retry_request(url, headers)
     soup = BeautifulSoup(response.text, "html.parser")
     form = soup.find("form")
-    # # Save entire page as HTML
-    # with open('confirmation_page.html', 'w', encoding='utf-8') as f:
-    #     f.write(soup.prettify())
-    # print("Saved HTML successfully.")
 
     if form:
         action_url = requests.compat.urljoin(url, form["action"]) if form.has_attr("action") else url
@@ -192,10 +179,10 @@ def create_fbunconfirmed(account_type, usern, gender):
             "birthday_day": f"{date}",
             "birthday_month": f"{month}",
             "birthday_year": f"{year}",
-            "reg_email__": input(f"Please enter your email {firstname} {lastname}:").strip(),
+            "reg_email__": input(f"Please enter your email {firstname} {lastname}: ").strip(),
             "sex": f"{gender}",
             "encpass": f"{password}",
-            "submit": "Sign Up"
+            "submit": "Sign Up",
         }
         email = data.get("reg_email__")
 
@@ -205,6 +192,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
 
         # Step 2: Submit the registration form
+        session.headers.update(headers)
         submit_response = retry_request(action_url, headers, method="post", data=data)
         try:
             if "c_user" in session.cookies:
@@ -213,104 +201,15 @@ def create_fbunconfirmed(account_type, usern, gender):
                 print(email + " " + password + " " + profile_link)
             else:
                 print("Login failed.")
-                sys.exit()  # exit if not logged in
+                return None
         except Exception as e:
             print("An error occurred:", str(e))
             sys.exit()
 
-
-
-    while True:
-        try:
-            # Step 3: Change email
-            change_email_url = "https://m.facebook.com/changeemail/"
-            headerssss = {
-                "sec-ch-ua-platform": '"Android"',
-                "x-requested-with": "XMLHttpRequest",
-                "accept": "*/*",
-                "user-agent": ua.chrome,
-                "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
-                "sec-ch-ua-mobile": "?1",
-                "sec-fetch-site": "same-origin",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-dest": "empty",
-                "accept-encoding": "gzip, deflate,",
-                "accept-language": "en-US,en;q=0.9",
-                "priority": "u=1, i"
-            }
-            email_response = retry_request(change_email_url, headerssss)
-            soup = BeautifulSoup(email_response.text, "html.parser")
-            form = soup.find("form")
-            break
-        except:
-            pass
-
-    if form:
-        action_url = requests.compat.urljoin(change_email_url, form["action"]) if form.has_attr(
-            "action") else change_email_url
-        inputs = form.find_all("input")
-        data = {}
-        for inp in inputs:
-            if inp.has_attr("name") and inp["name"] not in data:
-                time.sleep(random.uniform(3, 5))
-                data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
-        while True:
-            try:
-                emailsss = input("Please enter your email: ")
-                data["new"] = emailsss
-                data["submit"] = "Add"
-                break
-            except:
-                pass
-
         # Step 4: Submit email change form
         retry_request(action_url, headers, method="post", data=data)
         if "c_user" in session.cookies:
-            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
-            sys.stdout.flush()
-            headerssss = {
-                "sec-ch-ua-platform": '"Android"',
-                "x-requested-with": "XMLHttpRequest",
-                "accept": "*/*",
-                "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-                "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
-                "sec-ch-ua-mobile": "?1",
-                "sec-fetch-site": "same-origin",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-dest": "empty",
-                "accept-encoding": "gzip, deflate,",
-                "accept-language": "en-US,en;q=0.9",
-                "priority": "u=1, i"
-            }
-            url = "https://www.facebook.com"
-            fewsa = session.get(url, headers=headerssss)
-            soup = BeautifulSoup(fewsa.text, "html.parser")
-            form = soup.find("form")
-            # with open('confirmation_page.html', 'w', encoding='utf-8') as f:
-            #     f.write(soup.prettify())
-            # print("Saved HTML successfully.")
-            action_url = form.get("action")
-            csrf_token = form.find("input", {"name": "fb_dtsg"})["value"]
-            codesss = input("Please enter your code: ")
-            form_data = {
-                "code": codesss,
-                "fb_dtsg": csrf_token,
-            }
-
-            delay_seconds = random.uniform(3, 5)
-            time.sleep(delay_seconds)
-            submit_url = f"https://www.facebook.com{action_url}" if action_url.startswith("/") else action_url
-            session.post(submit_url, data=form_data)
-
-            folder = "."
-            file_path = os.path.join(folder, "created_acc.txt")
-            os.makedirs(folder, exist_ok=True)
-
-            # Write to the file
-            with open(file_path, "a") as f:
-                f.write(f"{firstname} {lastname}\t{phone_number}\t{password}\t{profile_link}\n")
-
-            return uid, firstname
+            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{email}|{password}|\n')
 
 def NEMAIN():
     os.system("clear")
