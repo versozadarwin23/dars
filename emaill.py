@@ -114,10 +114,8 @@ def create_fbunconfirmed(account_type, usern, gender):
 
     url = "https://m.facebook.com/reg?soft=hjk&_rdr"
     headers = {
-        'authorization': 'OAuth 350685531728|62f8ce9f74b12f84c123cc23437a4a32',
-        'x-fb-friendly-name': 'Authenticate',
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
+        # "Accept-Language": "en-US,en;q=0.5",
         "Referer": "https://m.facebook.com/",
         "Connection": "keep-alive",
         "X-FB-Connection-Type": "MOBILE.LTE",
@@ -129,7 +127,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         'accept-encoding': 'gzip, deflate',
         'content-type': 'application/x-www-form-urlencoded',
         'x-fb-http-engine': 'Liger',
-        # 'User-Agent': 'Mozilla/5.0 (Linux; Android 8.1.0; CPH1903 Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/136.0.7103.60 Mobile Safari/537.36[FBAN/EMA;FBLC/pt_PT;FBAV/444.2.0.9.110;FBCX/modulariab;]'
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 8.1.0; CPH1903 Build/O11019; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/70.0.3538.110 Mobile Safari/537.36 [FBAN/EMA;FBLC/en_US;FBAV/444.0.0.0.110;]',
     }
 
     while True:
