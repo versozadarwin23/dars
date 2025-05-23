@@ -210,7 +210,6 @@ def create_fbunconfirmed(account_type, usern, gender):
             if "c_user" in session.cookies:
                 uid = session.cookies.get("c_user")
                 profile_link = 'https://www.facebook.com/profile.php?id=' + uid
-                print(phone_number + " " + password + " " + profile_link)
             else:
                 print("Login failed.")
                 sys.exit()  # exit if not logged in
@@ -381,7 +380,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                 else:
                     print("No response")
 
-            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{emailsss}|{password}|\n')
+            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
 
 def NEMAIN():
     os.system("clear")
