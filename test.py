@@ -396,7 +396,7 @@ def create_fbunconfirmed(account_type, usern, gender):
             save_to_csv(filename, data_to_save)
 def NEMAIN():
     os.system("clear")
-    max_create = 500
+    max_create = 1
     account_type = 1
     gender = 1
     oks = []
