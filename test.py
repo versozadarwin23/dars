@@ -186,47 +186,56 @@ def create_fbunconfirmed(account_type, usern, gender):
                 print("Connection error, retrying in 3 seconds...")
             time.sleep(15)
 
-    response = retry_request(url, headers)
-    soup = BeautifulSoup(response.text, "html.parser")
-    form = soup.find("form")
-    # # Save entire page as HTML
-    # with open('confirmation_page.html', 'w', encoding='utf-8') as f:
-    #     f.write(soup.prettify())
-    # print("Saved HTML successfully.")
-
-    if form:
-        action_url = requests.compat.urljoin(url, form["action"]) if form.has_attr("action") else url
-        inputs = form.find_all("input")
-        data = {
-            "firstname": f"{firstname}",
-            "lastname": f"{lastname}",
-            "birthday_day": f"{date}",
-            "birthday_month": f"{month}",
-            "birthday_year": f"{year}",
-            "reg_email__": f"{phone_number}",
-            "sex": f"{gender}",
-            "encpass": f"{password}",
-            "submit": "Sign Up"
-        }
-
-        for inp in inputs:
-            if inp.has_attr("name") and inp["name"] not in data:
-                # time.sleep(random.uniform(3, 5))
-                data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
-
-        # Step 2: Submit the registration form
-        submit_response = retry_request(action_url, headers, method="post", data=data)
+    while True:
         try:
-            if "c_user" in session.cookies:
-                uid = session.cookies.get("c_user")
-                profile_id = 'https://www.facebook.com/profile.php?id=' + uid
-            else:
-                print("Login failed.")
-                sys.exit()  # exit if not logged in
-        except Exception as e:
-            print("An error occurred:", str(e))
-            sys.exit()
+            response = retry_request(url, headers)
+            soup = BeautifulSoup(response.text, "html.parser")
+            form = soup.find("form")
+            # # Save entire page as HTML
+            # with open('confirmation_page.html', 'w', encoding='utf-8') as f:
+            #     f.write(soup.prettify())
+            # print("Saved HTML successfully.")
+            break
+        except:
+            pass
 
+    while True:
+        try:
+            if form:
+                action_url = requests.compat.urljoin(url, form["action"]) if form.has_attr("action") else url
+                inputs = form.find_all("input")
+                data = {
+                    "firstname": f"{firstname}",
+                    "lastname": f"{lastname}",
+                    "birthday_day": f"{date}",
+                    "birthday_month": f"{month}",
+                    "birthday_year": f"{year}",
+                    "reg_email__": f"{phone_number}",
+                    "sex": f"{gender}",
+                    "encpass": f"{password}",
+                    "submit": "Sign Up"
+                }
+
+                for inp in inputs:
+                    if inp.has_attr("name") and inp["name"] not in data:
+                        # time.sleep(random.uniform(3, 5))
+                        data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
+
+                # Step 2: Submit the registration form
+                submit_response = retry_request(action_url, headers, method="post", data=data)
+                try:
+                    if "c_user" in session.cookies:
+                        uid = session.cookies.get("c_user")
+                        profile_id = 'https://www.facebook.com/profile.php?id=' + uid
+                        break
+                    else:
+                        print("Login failed.")
+                        sys.exit()  # exit if not logged in
+                except Exception as e:
+                    print("An error occurred:", str(e))
+                    sys.exit()
+        except:
+            pass
 
     while True:
         try:
@@ -354,7 +363,8 @@ def create_fbunconfirmed(account_type, usern, gender):
                     print("No response")
 
             filename = "/storage/emulated/0/output.csv"
-            data_to_save = [firstname, lastname, phone_number, password, profile_id, token]
+            full_name = f"{firstname} {lastname}"
+            data_to_save = [full_name, phone_number, password, profile_id, token]
 
             # Function to save data to a CSV file
             def save_to_csv(filename, data):
