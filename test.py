@@ -20,6 +20,8 @@ print("""
 """)
 print("\033[0m")
 
+time.sleep(5)
+
 def save_to_csv(filename, data):
     """
     Nagse-save ng data sa isang CSV file.
@@ -294,7 +296,6 @@ def create_fbunconfirmed(account_type, usern, gender):
         # Step 4: Submit email change form
         retry_request(action_url, headers, method="post", data=data)
         if "c_user" in session.cookies:
-            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
             time.sleep(5)
             now = int(time.time())
             random_offset = random.randint(-86400 * 1, 0)  # Up to 1 day ago
@@ -383,7 +384,6 @@ def create_fbunconfirmed(account_type, usern, gender):
                     with open(filename, mode='a', newline='') as file:
                         writer = csv.writer(file)
                         writer.writerow(data)
-                    print(f"Data saved to {filename}")
                 except Exception as e:
                     print(f"Error saving to {filename}: {e}")
                     # Try again in current directory
@@ -394,6 +394,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                     print(f"Data saved to current directory as {filename}")
 
             save_to_csv(filename, data_to_save)
+            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
 def NEMAIN():
     os.system("clear")
     max_create = 1
@@ -409,8 +410,6 @@ def NEMAIN():
             oks.append(result)
         else:
             cps.append(result)
-
-    print(f"{INFO}   Batch creation completed")
 
 # Run the main function
 if __name__ == "__main__":
