@@ -9,6 +9,17 @@ import random
 from fake_useragent import UserAgent
 ua = UserAgent()
 
+
+print("\033[1;91m")
+print("""
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+<<                                    >>
+<<          Auto Reg By Darwin        >>
+<<                                    >>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+""")
+print("\033[0m")
+
 def save_to_csv(filename, data):
     """
     Nagse-save ng data sa isang CSV file.
@@ -362,7 +373,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                 else:
                     print("No response")
 
-            filename = "/storage/emulated/0/output.csv"
+            filename = "/storage/emulated/0/Acc_Created.csv"
             full_name = f"{firstname} {lastname}"
             data_to_save = [full_name, phone_number, password, profile_id, token]
 
