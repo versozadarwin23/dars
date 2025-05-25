@@ -127,7 +127,7 @@ def generate_user_details(account_type, gender):
 def create_fbunconfirmed(account_type, usern, gender):
     """Create a Facebook account using kuku.lu for email and OTP."""
 
-    global uid, profie_link, profile_link, token, profile_id
+    global uid, profie_link, profile_link, token, profile_id, data_to_save, filename, save_to_csv
     asdf = ''.join(random.choices(string.ascii_lowercase + string.digits, k=5))
     firstname, lastname, date, year, month, phone_number, password = generate_user_details(account_type, gender)
 
@@ -407,14 +407,21 @@ def create_fbunconfirmed(account_type, usern, gender):
                         save_to_csv(filename, data_to_save)
                         # print(f"\033[91m[-] {phone_number} {password} | {user_msg}\033[0m")
                     else:
-                        print(f"\033[93m[?] {phone_number} {password} | Unexpected response: {result}\033[0m")
+                        try:
+                            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
+                            save_to_csv(filename, data_to_save)
+                        except:
+                            pass
 
             except Exception as e:
-                print(f"\033[91m[!] {phone_number} {password} | Exception: {e}\033[0m")
-                if 'response' in locals():
-                    print(f"Response text: {response.text}")
-                else:
-                    print("No response")
+                try:
+                    if 'response' in locals():
+                        sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
+                        save_to_csv(filename, data_to_save)
+                    else:
+                        print("No response")
+                except:
+                    pass
 
 def NEMAIN():
     os.system("clear")
