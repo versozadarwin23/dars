@@ -142,11 +142,11 @@ def create_fbunconfirmed(account_type, usern, gender):
                 print('error')
                 pass
 
-    url = "https://m.facebook.com/reg?soft=hjk&_rdr"
+    url = "https://limited.facebook.com/reg"
     headers = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         # "Accept-Language": "en-US,en;q=0.5",
-        "Referer": "https://m.facebook.com/",
+        "Referer": "https://limited.facebook.com/reg",
         "Connection": "keep-alive",
         "X-FB-Connection-Type": "MOBILE.LTE",
         "X-FB-Connection-Quality": "EXCELLENT",
@@ -236,6 +236,7 @@ def create_fbunconfirmed(account_type, usern, gender):
 
                 # Step 2: Submit the registration form
                 submit_response = retry_request(action_url, headers, method="post", data=data)
+                time.sleep(5)
                 try:
                     if "c_user" in session.cookies:
                         uid = session.cookies.get("c_user")
