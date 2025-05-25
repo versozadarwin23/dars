@@ -6,9 +6,6 @@ from bs4 import BeautifulSoup
 import time
 import sys
 import random
-from fake_useragent import UserAgent
-ua = UserAgent()
-
 
 print("\033[1;91m")
 print("""
@@ -297,6 +294,7 @@ def create_fbunconfirmed(account_type, usern, gender):
         retry_request(action_url, headers, method="post", data=data)
         if "c_user" in session.cookies:
             time.sleep(5)
+            os.system("clear")
             now = int(time.time())
             random_offset = random.randint(-86400 * 1, 0)  # Up to 1 day ago
             fake_timestamp = str(now + random_offset)
@@ -379,7 +377,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                                     writer.writerow(data)
                                 print(f"Data saved to current directory as {filename}")
 
-                        sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
+                        sys.stdout.write(f'\r\033[K{password}|\n')
                         save_to_csv(filename, data_to_save)
                     elif 'error' in result:
                         error = result['error']
@@ -403,12 +401,12 @@ def create_fbunconfirmed(account_type, usern, gender):
                                     writer.writerow(data)
                                 print(f"Data saved to current directory as {filename}")
 
-                        sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
+                        sys.stdout.write(f'\r\033[K{password}|\n')
                         save_to_csv(filename, data_to_save)
                         # print(f"\033[91m[-] {phone_number} {password} | {user_msg}\033[0m")
                     else:
                         try:
-                            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
+                            sys.stdout.write(f'\r\033[K{password}|\n')
                             save_to_csv(filename, data_to_save)
                         except:
                             pass
@@ -416,7 +414,7 @@ def create_fbunconfirmed(account_type, usern, gender):
             except Exception as e:
                 try:
                     if 'response' in locals():
-                        sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
+                        sys.stdout.write(f'\r\033[K{password}|\n')
                         save_to_csv(filename, data_to_save)
                     else:
                         print("No response")
