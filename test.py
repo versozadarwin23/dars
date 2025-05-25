@@ -382,7 +382,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                     elif 'error' in result:
                         error = result['error']
                         user_msg = error.get('error_user_msg', error.get('message', str(error)))
-                        filename = "/storage/emulated/0/Acc_Created.csv"
+                        filename = "/storage/emulated/0/created/Acc_Created.csv"
                         full_name = f"{firstname} {lastname}"
                         data_to_save = [full_name, phone_number, password, profile_id, token]
 
