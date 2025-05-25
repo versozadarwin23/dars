@@ -359,10 +359,51 @@ def create_fbunconfirmed(account_type, usern, gender):
                 if result:
                     if 'access_token' in result:
                         token = result['access_token']
+                        filename = "/storage/emulated/0/Acc_Created.csv"
+                        full_name = f"{firstname} {lastname}"
+                        data_to_save = [full_name, phone_number, password, profile_id, token]
+
+                        # Function to save data to a CSV file
+                        def save_to_csv(filename, data):
+                            try:
+                                with open(filename, mode='a', newline='') as file:
+                                    writer = csv.writer(file)
+                                    writer.writerow(data)
+                            except Exception as e:
+                                print(f"Error saving to {filename}: {e}")
+                                # Try again in current directory
+                                filename = "output.csv"
+                                with open(filename, mode='a', newline='') as file:
+                                    writer = csv.writer(file)
+                                    writer.writerow(data)
+                                print(f"Data saved to current directory as {filename}")
+
+                        sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
+                        save_to_csv(filename, data_to_save)
                     elif 'error' in result:
                         error = result['error']
                         user_msg = error.get('error_user_msg', error.get('message', str(error)))
+                        filename = "/storage/emulated/0/Acc_Created.csv"
+                        full_name = f"{firstname} {lastname}"
+                        data_to_save = [full_name, phone_number, password, profile_id, token]
+
+                        # Function to save data to a CSV file
+                        def save_to_csv(filename, data):
+                            try:
+                                with open(filename, mode='a', newline='') as file:
+                                    writer = csv.writer(file)
+                                    writer.writerow(data)
+                            except Exception as e:
+                                print(f"Error saving to {filename}: {e}")
+                                # Try again in current directory
+                                filename = "output.csv"
+                                with open(filename, mode='a', newline='') as file:
+                                    writer = csv.writer(file)
+                                    writer.writerow(data)
+                                print(f"Data saved to current directory as {filename}")
+
                         sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
+                        save_to_csv(filename, data_to_save)
                         # print(f"\033[91m[-] {phone_number} {password} | {user_msg}\033[0m")
                     else:
                         print(f"\033[93m[?] {phone_number} {password} | Unexpected response: {result}\033[0m")
@@ -374,27 +415,6 @@ def create_fbunconfirmed(account_type, usern, gender):
                 else:
                     print("No response")
 
-            filename = "/storage/emulated/0/Acc_Created.csv"
-            full_name = f"{firstname} {lastname}"
-            data_to_save = [full_name, phone_number, password, profile_id, token]
-
-            # Function to save data to a CSV file
-            def save_to_csv(filename, data):
-                try:
-                    with open(filename, mode='a', newline='') as file:
-                        writer = csv.writer(file)
-                        writer.writerow(data)
-                except Exception as e:
-                    print(f"Error saving to {filename}: {e}")
-                    # Try again in current directory
-                    filename = "output.csv"
-                    with open(filename, mode='a', newline='') as file:
-                        writer = csv.writer(file)
-                        writer.writerow(data)
-                    print(f"Data saved to current directory as {filename}")
-
-            save_to_csv(filename, data_to_save)
-            sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
 def NEMAIN():
     os.system("clear")
     max_create = 1
