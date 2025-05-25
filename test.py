@@ -377,7 +377,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                                     writer.writerow(data)
                                 print(f"Data saved to current directory as {filename}")
 
-                        sys.stdout.write(f'\r\033[K{password}|\n')
+                        sys.stdout.write(f'\r\033[K{password}\n')
                         save_to_csv(filename, data_to_save)
                     elif 'error' in result:
                         error = result['error']
@@ -401,12 +401,12 @@ def create_fbunconfirmed(account_type, usern, gender):
                                     writer.writerow(data)
                                 print(f"Data saved to current directory as {filename}")
 
-                        sys.stdout.write(f'\r\033[K{password}|\n')
+                        sys.stdout.write(f'\r\033[K{password}\n')
                         save_to_csv(filename, data_to_save)
                         # print(f"\033[91m[-] {phone_number} {password} | {user_msg}\033[0m")
                     else:
                         try:
-                            sys.stdout.write(f'\r\033[K{password}|\n')
+                            sys.stdout.write(f'\r\033[K{password}\n')
                             save_to_csv(filename, data_to_save)
                         except:
                             pass
@@ -414,7 +414,7 @@ def create_fbunconfirmed(account_type, usern, gender):
             except Exception as e:
                 try:
                     if 'response' in locals():
-                        sys.stdout.write(f'\r\033[K{password}|\n')
+                        sys.stdout.write(f'\r\033[K{password}\n')
                         save_to_csv(filename, data_to_save)
                     else:
                         print("No response")
