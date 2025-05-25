@@ -240,7 +240,7 @@ def create_fbunconfirmed(account_type, usern, gender):
                         profile_id = 'https://www.facebook.com/profile.php?id=' + uid
                         break
                     else:
-                        print("Login failed.")
+                        print("Login failed. Plss Turn on Airplane mode And off And Run Again.")
                         sys.exit()  # exit if not logged in
                 except Exception as e:
                     print("An error occurred:", str(e))
