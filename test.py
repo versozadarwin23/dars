@@ -20,7 +20,7 @@ print("""
 """)
 print("\033[0m")
 
-time.sleep(5)
+time.sleep(2)
 
 def save_to_csv(filename, data):
     """
@@ -142,11 +142,11 @@ def create_fbunconfirmed(account_type, usern, gender):
                 print('error')
                 pass
 
-    url = "https://m.facebook.com/reg?soft=hjk&_rdr"
+    url = "https://limited.facebook.com/reg"
     headers = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         # "Accept-Language": "en-US,en;q=0.5",
-        "Referer": "https://m.facebook.com/",
+        "Referer": "https://limited.facebook.com/reg",
         "Connection": "keep-alive",
         "X-FB-Connection-Type": "MOBILE.LTE",
         "X-FB-Connection-Quality": "EXCELLENT",
@@ -282,7 +282,6 @@ def create_fbunconfirmed(account_type, usern, gender):
         data = {}
         for inp in inputs:
             if inp.has_attr("name") and inp["name"] not in data:
-                time.sleep(random.uniform(3, 5))
                 data[inp["name"]] = inp["value"] if inp.has_attr("value") else ""
         while True:
             try:
@@ -363,7 +362,8 @@ def create_fbunconfirmed(account_type, usern, gender):
                     elif 'error' in result:
                         error = result['error']
                         user_msg = error.get('error_user_msg', error.get('message', str(error)))
-                        print(f"\033[91m[-] {phone_number} {password} | {user_msg}\033[0m")
+                        sys.stdout.write(f'\r\033[K{firstname} {lastname}|{phone_number}|{password}|\n')
+                        # print(f"\033[91m[-] {phone_number} {password} | {user_msg}\033[0m")
                     else:
                         print(f"\033[93m[?] {phone_number} {password} | Unexpected response: {result}\033[0m")
 
